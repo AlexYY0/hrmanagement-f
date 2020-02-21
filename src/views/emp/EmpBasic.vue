@@ -5,10 +5,10 @@
                 <div>
                     <el-input placeholder="请输入员工名进行搜索，可以直接回车搜索..." prefix-icon="el-icon-search"
                               clearable
-                              @clear="initEmps"
+                              @clear="basicSearch"
                               style="width: 350px;margin-right: 10px" v-model="keyword"
-                              @keydown.enter.native="initEmps" :disabled="showAdvanceSearchView"></el-input>
-                    <el-button icon="el-icon-search" type="primary" @click="initEmps" :disabled="showAdvanceSearchView">
+                              @keydown.enter.native="basicSearch" :disabled="showAdvanceSearchView"></el-input>
+                    <el-button icon="el-icon-search" type="primary" @click="basicSearch" :disabled="showAdvanceSearchView">
                         搜索
                     </el-button>
                     <el-button type="primary" @click="showAdvanceSearchView = !showAdvanceSearchView">
@@ -25,17 +25,18 @@
                             :on-error="onError"
                             :disabled="importDataDisabled"
                             style="display: inline-flex;margin-right: 8px"
-                            action="/employee/import">
+                            action="/employee/basic/import">
                         <el-button :disabled="importDataDisabled" type="success" :icon="importDataBtnIcon">
                             {{importDataBtnText}}
                         </el-button>
                     </el-upload>
-                    <el-button type="success" @click="exportData" icon="el-icon-download">
+                    <el-button type="success" icon="el-icon-download" @click="exportData">
                         导出数据
                     </el-button>
                     <el-button type="primary" icon="el-icon-plus" @click="showAddEmpView">
                         添加用户
                     </el-button>
+                    <el-button type="danger" icon="el-icon-delete" @click="batchDelete">批量删除</el-button>
                 </div>
             </div>
             <transition name="slide-fade">
@@ -44,7 +45,7 @@
                     <el-row>
                         <el-col :span="5">
                             政治面貌:
-                            <el-select v-model="searchValue.politic" placeholder="请选择政治面貌" size="mini"
+                            <el-select clearable v-model="searchValue.politic" placeholder="请选择政治面貌" size="mini"
                                        style="width: 130px;">
                                 <el-option
                                         v-for="item in politics"
@@ -56,7 +57,7 @@
                         </el-col>
                         <el-col :span="4">
                             民族:
-                            <el-select v-model="searchValue.nation" placeholder="请选择民族" size="mini"
+                            <el-select clearable v-model="searchValue.nation" placeholder="请选择民族" size="mini"
                                        style="width: 130px;">
                                 <el-option
                                         v-for="item in nations"
@@ -73,12 +74,12 @@
                                     title="请选择部门"
                                     width="200"
                                     trigger="manual"
-                                    v-model="popVisible">
+                                    v-model="searchDepView">
                                 <el-tree default-expand-all :data="allDeps" :props="defaultProps"
                                          @node-click="searvhViewHandleNodeClick"></el-tree>
                                 <div slot="reference"
                                      style="width: 130px;display: inline-flex;font-size: 13px;border: 1px solid #dedede;height: 26px;border-radius: 5px;cursor: pointer;align-items: center;padding-left: 8px;box-sizing: border-box;margin-left: 3px"
-                                     @click="showDepView">{{inputDepName}}
+                                     @click="showSearchDepView">{{inputDepName}}
                                 </div>
                             </el-popover>
                         </el-col>
@@ -96,8 +97,8 @@
                             </el-radio-group>
                         </el-col>
                         <el-col :span="5" :offset="0">
-                            <el-button size="mini">取消</el-button>
-                            <el-button size="mini" icon="el-icon-search" type="primary" @click="initEmps('advanced')">搜索</el-button>
+                            <el-button size="mini" @click="cleanAll">取消</el-button>
+                            <el-button size="mini" icon="el-icon-search" type="primary" @click="advancedSearch">搜索</el-button>
                         </el-col>
                     </el-row>
                 </div>
@@ -105,6 +106,7 @@
         </div>
         <div style="margin-top: 10px">
             <el-table
+                    ref="multipleTable"
                     :data="emps"
                     stripe
                     border
@@ -112,12 +114,15 @@
                     element-loading-text="正在加载..."
                     element-loading-spinner="el-icon-loading"
                     element-loading-background="rgba(0, 0, 0, 0.8)"
+                    @selection-change="handleSelectionChange"
                     style="width: 100%">
                 <el-table-column
+                        align="center"
                         type="selection"
                         width="55">
                 </el-table-column>
                 <el-table-column
+                        header-align="center"
                         prop="empname"
                         fixed
                         align="left"
@@ -125,106 +130,129 @@
                         width="90">
                 </el-table-column>
                 <el-table-column
+                        header-align="center"
                         prop="workid"
                         label="工号"
                         align="left"
                         width="85">
                 </el-table-column>
                 <el-table-column
+                        header-align="center"
                         prop="gender"
                         label="性别"
                         align="left"
                         width="50">
                 </el-table-column>
                 <el-table-column
+                        header-align="center"
                         prop="birthday"
                         width="95"
                         align="left"
                         label="出生日期">
                 </el-table-column>
                 <el-table-column
+                        header-align="center"
                         prop="idcard"
                         width="150"
                         align="left"
                         label="身份证号码">
                 </el-table-column>
                 <el-table-column
+                        header-align="center"
                         prop="marital"
                         width="70"
                         label="婚姻状况">
                 </el-table-column>
                 <el-table-column
+                        header-align="center"
                         prop="nation"
                         width="85"
                         label="民族">
                 </el-table-column>
                 <el-table-column
+                        header-align="center"
                         prop="nativeplace"
                         width="80"
                         label="籍贯">
                 </el-table-column>
                 <el-table-column
+                        header-align="center"
                         prop="politic"
-                        width="95"
+                        width="110"
                         label="政治面貌">
                 </el-table-column>
                 <el-table-column
+                        header-align="center"
                         prop="email"
                         width="180"
                         align="left"
                         label="电子邮件">
                 </el-table-column>
                 <el-table-column
+                        header-align="center"
                         prop="cellphone"
                         width="100"
                         align="left"
                         label="电话号码">
                 </el-table-column>
                 <el-table-column
+                        header-align="center"
                         prop="address"
                         width="220"
                         align="left"
                         label="联系地址">
                 </el-table-column>
                 <el-table-column
+                        header-align="center"
                         prop="department.depname"
                         width="100"
                         align="left"
                         label="所属部门">
                 </el-table-column>
                 <el-table-column
+                        header-align="center"
                         prop="workstate"
                         width="100"
                         align="left"
                         label="任职状态">
                 </el-table-column>
                 <el-table-column
+                        header-align="center"
                         prop="school"
                         width="120"
                         align="left"
                         label="毕业院校">
                 </el-table-column>
                 <el-table-column
+                        header-align="center"
                         prop="specialty"
                         width="150"
                         align="left"
                         label="专业">
                 </el-table-column>
                 <el-table-column
+                        header-align="center"
                         prop="hdegree"
                         width="80"
                         align="left"
                         label="最高学历">
                 </el-table-column>
                 <el-table-column
+                        header-align="center"
                         fixed="right"
-                        width="200"
+                        width="170"
                         label="操作">
                     <template slot-scope="scope">
                         <el-button @click="showEditEmpView(scope.row)" style="padding: 3px" size="mini">编辑</el-button>
-                        <el-button style="padding: 3px" size="mini" type="primary">查看高级资料</el-button>
-                        <el-button @click="deleteEmp(scope.row)" style="padding: 3px" size="mini" type="danger">删除
-                        </el-button>
+                        <el-button @click="checkEmpView(scope.row)" style="padding: 3px" size="mini" type="primary">查看</el-button>
+                        <el-button @click="deleteEmp(scope.row)" style="padding: 3px" size="mini" type="danger">删除</el-button>
+                        <el-dropdown trigger="click" style="padding: 3px;margin-left: 8px" @command="handleCommand" >
+                            <span class="el-dropdown-link"><i class="el-icon-more-outline"></i></span>
+                            <el-dropdown-menu slot="dropdown">
+                                <el-dropdown-item command="a">黄金糕</el-dropdown-item>
+                                <el-dropdown-item command="b">狮子头</el-dropdown-item>
+                            </el-dropdown-menu>
+                        </el-dropdown>
                     </template>
                 </el-table-column>
             </el-table>
@@ -243,7 +271,7 @@
                 :visible.sync="dialogVisible"
                 width="80%">
             <div>
-                <el-form :model="emp" :rules="rules" ref="empForm">
+                <el-form :model="emp" :rules="rules" ref="empForm" :disabled="NoModify">
                     <el-row>
                         <el-col :span="6">
                             <el-form-item label="姓名:" prop="empname">
@@ -365,16 +393,17 @@
                         <el-col :span="6">
                             <el-form-item label="所属部门:" prop="depid">
                                 <el-popover
+                                        :disabled="NoModify"
                                         placement="right"
                                         title="请选择部门"
                                         width="200"
                                         trigger="manual"
-                                        v-model="popVisible">
+                                        v-model="empDepView">
                                     <el-tree default-expand-all :data="allDeps" :props="defaultProps"
-                                             @node-click="handleNodeClick"></el-tree>
+                                             @node-click="empViewhandleNodeClick"></el-tree>
                                     <div slot="reference"
                                          style="width: 150px;display: inline-flex;font-size: 13px;border: 1px solid #dedede;height: 26px;border-radius: 5px;cursor: pointer;align-items: center;padding-left: 8px;box-sizing: border-box"
-                                         @click="showDepView">{{inputDepName}}
+                                         @click="showEmpDepView">{{inputDepName}}
                                     </div>
                                 </el-popover>
                             </el-form-item>
@@ -412,8 +441,8 @@
                 </el-form>
             </div>
             <span slot="footer" class="dialog-footer">
-            <el-button @click="dialogVisible = false">取 消</el-button>
-            <el-button type="primary" @click="doAddEmp">确 定</el-button>
+            <el-button @click="cancelDialog">取 消</el-button>
+            <el-button type="primary" @click="confirmDialog">确 定</el-button>
             </span>
         </el-dialog>
     </div>
@@ -430,17 +459,21 @@
                     depid: null,
                     workstate: null
                 },
-                searchType: '',
+                searchType: null,
                 title: '',
+                standby:'备用框',
                 importDataBtnText: '导入数据',
                 importDataBtnIcon: 'el-icon-upload2',
                 importDataDisabled: false,
                 showAdvanceSearchView: false,
                 allDeps: [],
                 emps: [],
+                multipleSelection: [],
                 loading: false,
-                popVisible: false,
+                searchDepView: false,
+                empDepView: false,
                 dialogVisible: false,
+                NoModify: false,
                 total: 0,
                 page: 1,
                 keyword: '',
@@ -450,7 +483,7 @@
                 hdegrees: ['本科', '大专', '硕士', '博士', '高中', '初中', '小学', '其他'],
                 inputDepName: '所属部门',
                 emp: {
-                    empname: "javaboy",
+                    empname: "EmperorWS",
                     gender: "男",
                     birthday: "1989-12-31",
                     idcard: "610122199001011256",
@@ -461,16 +494,16 @@
                     email: "laowang@qq.com",
                     cellphone: "18565558897",
                     address: "深圳市南山区",
-                    depid: null,
+                    depid: 1,
                     hdegree: "本科",
                     specialty: "信息管理与信息系统",
                     school: "深圳大学",
                     workstate: "在职",
-                    workid: "00000057"
+                    workid: "00000000057"
                 },
                 defaultProps: {
                     children: 'children',
-                    label: 'name'
+                    label: 'depname'
                 },
                 rules: {
                     empname: [{required: true, message: '请输入用户名', trigger: 'blur'}],
@@ -498,7 +531,7 @@
                     school: [{required: true, message: '请输入毕业院校', trigger: 'blur'}],
                     specialty: [{required: true, message: '请输入专业', trigger: 'blur'}],
                     hdegree: [{required: true, message: '请输入学历', trigger: 'blur'}],
-                    standby: [{required: true, message: '请输入备用', trigger: 'blur'}],
+                    standby: [{required: false, message: '请输入备用', trigger: 'blur'}],
                 }
             }
         },
@@ -507,11 +540,6 @@
             this.initData();
         },
         methods: {
-            searvhViewHandleNodeClick(data) {
-                this.inputDepName = data.depname;
-                this.searchValue.depid = data.depid;
-                this.popVisible = !this.popVisible
-            },
             onError(err, file, fileList) {
                 this.importDataBtnText = '导入数据';
                 this.importDataBtnIcon = 'el-icon-upload2';
@@ -529,7 +557,26 @@
                 this.importDataDisabled = true;
             },
             exportData() {
-                window.open('/employee/export', '_parent');
+                this.postRequestExcel("/employee/basic/export/",this.multipleSelection).then(resp => {
+                    if (resp) {
+                        const content = resp;
+                        const blob = new Blob([content],{type: 'application/vnd.ms-excel'});
+                        const fileName = this.moment().format('YYYY.MM.DD_HH-mm-ss')+'员工信息表.xls';
+                        if ('download' in document.createElement('a')) { // 非IE下载
+                            const elink = document.createElement('a');
+                            elink.download = fileName;
+                            elink.style.display = 'none';
+                            elink.href = URL.createObjectURL(blob);
+                            document.body.appendChild(elink);
+                            elink.click()
+                            URL.revokeObjectURL(elink.href); // 释放URL 对象
+                            document.body.removeChild(elink);
+                        } else { // IE10+下载
+                            navigator.msSaveBlob(blob, fileName);
+                        }
+                    }
+                });
+                //window.open('/employee/basic/export','_parent',this.multipleSelection);
             },
             emptyEmp() {
                 this.emp = {
@@ -552,19 +599,48 @@
                 }
                 this.inputDepName = '';
             },
+            getMaxWordID() {
+                this.getRequest("/employee/basic/maxWorkID").then(resp => {
+                    if (resp) {
+                        this.emp.workid = resp.obj;
+                        this.standby=resp.obj;
+                    }
+                })
+            },
+            showAddEmpView() {
+                this.emptyEmp();
+                this.title = '添加新员工';
+                this.getMaxWordID();
+                this.dialogVisible = true;
+            },
             showEditEmpView(data) {
                 this.title = '编辑员工信息';
                 this.emp = data;
                 this.inputDepName = data.department.depname;
                 this.dialogVisible = true;
             },
+            checkEmpView(data){
+                this.title='查看员工信息';
+                this.emp = data;
+                this.inputDepName = data.department.depname;
+                this.dialogVisible = true;
+                this.NoModify=true;
+            },
+            cancelDialog(){
+                this.dialogVisible = false;
+                this.NoModify=false;
+            },
+            confirmDialog(){
+                this.doAddEmp();
+                this.NoModify=false;
+            },
             deleteEmp(data) {
-                this.$confirm('此操作将永久删除【' + data.name + '】, 是否继续?', '提示', {
+                this.$confirm('此操作将永久删除【' + data.empname + '】, 是否继续?', '提示', {
                     confirmButtonText: '确定',
                     cancelButtonText: '取消',
                     type: 'warning'
                 }).then(() => {
-                    this.deleteRequest("/employee/" + data.workid).then(resp => {
+                    this.deleteRequest("/employee/basic/" + data.workid).then(resp => {
                         if (resp) {
                             this.initEmps();
                         }
@@ -577,13 +653,14 @@
                 });
             },
             doAddEmp() {
-                if (this.emp.id) {
+                if (this.emp.workid==this.standby) {
                     this.$refs['empForm'].validate(valid => {
                         if (valid) {
-                            this.putRequest("/employee/", this.emp).then(resp => {
+                            this.postRequest("/employee/basic/", this.emp).then(resp => {
                                 if (resp) {
                                     this.dialogVisible = false;
                                     this.initEmps();
+                                    this.standby++;
                                 }
                             })
                         }
@@ -591,7 +668,7 @@
                 } else {
                     this.$refs['empForm'].validate(valid => {
                         if (valid) {
-                            this.postRequest("/employee/", this.emp).then(resp => {
+                            this.putRequest("/employee/basic/", this.emp).then(resp => {
                                 if (resp) {
                                     this.dialogVisible = false;
                                     this.initEmps();
@@ -601,24 +678,43 @@
                     });
                 }
             },
-            handleNodeClick(data) {
+            batchDelete(){
+                this.$confirm('此操作将永久删除所选中的所有员工, 是否继续?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    this.postRequest("/employee/basic/deleteemps/",this.multipleSelection).then(resp => {
+                        if (resp) {
+                            this.initEmps();
+                        }
+                    })
+                }).catch(() => {
+                    this.$message({
+                        type: 'info',
+                        message: '已取消删除'
+                    });
+                });
+            },
+            searvhViewHandleNodeClick(data) {
+                this.inputDepName = data.depname;
+                this.searchValue.depid = data.depid;
+                this.searchDepView = !this.searchDepView
+            },
+            empViewhandleNodeClick(data) {
                 this.inputDepName = data.depname;
                 this.emp.depid = data.depid;
-                this.popVisible = !this.popVisible
+                this.empDepView = !this.empDepView;
             },
-            showDepView() {
-                this.popVisible = !this.popVisible
+            showSearchDepView() {
+                this.searchDepView = !this.searchDepView;
             },
-            getMaxWordID() {
-                this.getRequest("/employee/maxWorkID").then(resp => {
-                    if (resp) {
-                        this.emp.workid = resp.obj;
-                    }
-                })
+            showEmpDepView(){
+                this.empDepView=!this.empDepView;
             },
             initData() {
                 if (!window.sessionStorage.getItem("deps")) {
-                    this.getRequest('/employee/deps').then(resp => {
+                    this.getRequest('/employee/basic/deps').then(resp => {
                         if (resp) {
                             this.allDeps = resp;
                             window.sessionStorage.setItem("deps", JSON.stringify(resp));
@@ -636,16 +732,10 @@
                 this.page = currentPage;
                 this.initEmps();
             },
-            showAddEmpView() {
-                this.emptyEmp();
-                this.title = '添加员工';
-                this.getMaxWordID();
-                this.dialogVisible = true;
-            },
-            initEmps(type) {
+            initEmps() {
                 this.loading = true;
-                let url = '/employee/?page=' + this.page + '&size=' + this.size;
-                if (type && type == 'advanced') {
+                let url = '/employee/basic/?page=' + this.page + '&size=' + this.size;
+                if (this.searchType && this.searchType == 'advanced') {
                     if (this.searchValue.politic) {
                         url += '&politic=' + this.searchValue.politic;
                     }
@@ -668,6 +758,22 @@
                         this.total = resp.total;
                     }
                 });
+            },
+            cleanAll(){
+                this.searchType=null;
+                this.showAdvanceSearchView = !this.showAdvanceSearchView;
+                this.initEmps();
+            },
+            basicSearch(){
+                this.searchType=null;
+                this.initEmps();
+            },
+            advancedSearch(){
+                this.searchType='advanced';
+                this.initEmps();
+            },
+            handleSelectionChange(val) {
+                this.multipleSelection = val;
             }
         }
     }

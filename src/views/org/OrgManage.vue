@@ -158,7 +158,7 @@
                 deps: [],
                 defaultProps: {
                     children: 'children',
-                    label: 'name'
+                    label: 'depname'
                 },
                 employees: [],
                 state: ''
@@ -193,7 +193,7 @@
                 }
             },
             doUpdateDep(){
-                this.putRequest("/organization/department/update/", this.dep).then(resp => {
+                this.putRequest("/organization/management/update/", this.dep).then(resp => {
                     if (resp) {
                         this.updateDep2Deps(this.deps, resp.obj);
                         this.updateDialogVisible = false;
@@ -217,7 +217,7 @@
                 }
             },
             doAddDep() {
-                this.postRequest("/organization/department/", this.dep).then(resp => {
+                this.postRequest("/organization/management/", this.dep).then(resp => {
                     if (resp) {
                         this.addDep2Deps(this.deps, resp.obj);
                         this.addDialogVisible = false;
@@ -249,7 +249,7 @@
                         cancelButtonText: '取消',
                         type: 'warning'
                     }).then(() => {
-                        this.deleteRequest("/organization/department/"+data.depid).then(resp=>{
+                        this.deleteRequest("/organization/management/"+data.depid).then(resp=>{
                             if (resp) {
                                 this.removeDepFromDeps(null,this.deps,data.depid);
                             }
@@ -274,7 +274,7 @@
                 this.addDialogVisible = true;
             },
             initDeps() {
-                this.getRequest("/organization/department/").then(resp => {
+                this.getRequest("/organization/management/").then(resp => {
                     if (resp) {
                         this.deps = resp;
                     }
@@ -297,7 +297,7 @@
                 };
             },
             getAllemployees(){
-                this.getRequest("/organization/department/employee/").then(resp => {
+                this.getRequest("/organization/management/employee/").then(resp => {
                     if (resp) {
                         this.employees = resp;
                     }
@@ -336,7 +336,4 @@
     /deep/ .findAllEmp-autocomplete li.highlighted .workid{
         color: #ddd;
     }
-</style>
-<style>
-
 </style>

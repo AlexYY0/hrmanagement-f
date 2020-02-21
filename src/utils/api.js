@@ -1,6 +1,6 @@
-import axios from 'axios'
+import axios from 'axios';
 import {Message} from 'element-ui';
-import router from '../router'
+import router from '../router';
 
 axios.interceptors.response.use(success => {
     if (success.status && success.status == 200 && success.data.status == 500) {
@@ -47,6 +47,14 @@ export const postKeyValueRequest = (url, params) => {
             'Content-Type': 'application/x-www-form-urlencoded'
         }
     });
+}
+export const postRequestExcel = (url, params) => {
+    return axios({
+        method: 'post',
+        url: `${base}${url}`,
+        data: params,
+        responseType: 'blob'
+    })
 }
 export const postRequest = (url, params) => {
     return axios({
