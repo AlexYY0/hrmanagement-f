@@ -5,7 +5,6 @@
                 prefix-icon="el-icon-search"
                 v-model="filterText">
         </el-input>
-
         <div class="organization-tree">
             <el-tree
                     :data="deps"

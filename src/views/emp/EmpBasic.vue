@@ -36,7 +36,6 @@
                     <el-button type="primary" icon="el-icon-plus" @click="showAddEmpView">
                         添加用户
                     </el-button>
-                    <el-button type="danger" icon="el-icon-delete" @click="batchDelete">批量删除</el-button>
                 </div>
             </div>
             <transition name="slide-fade">
@@ -257,14 +256,17 @@
                     </template>
                 </el-table-column>
             </el-table>
-            <div style="display: flex;justify-content: flex-end">
-                <el-pagination
-                        background
-                        @current-change="currentChange"
-                        @size-change="sizeChange"
-                        layout="sizes, prev, pager, next, jumper, ->, total, slot"
-                        :total="total">
-                </el-pagination>
+            <div>
+                <div style="display: flex;justify-content: space-between">
+                    <el-button type="danger" icon="el-icon-delete" @click="batchDelete">批量删除</el-button>
+                    <el-pagination
+                            background
+                            @current-change="currentChange"
+                            @size-change="sizeChange"
+                            layout="sizes, prev, pager, next, jumper, ->, total, slot"
+                            :total="total">
+                    </el-pagination>
+                </div>
             </div>
         </div>
         <el-dialog
@@ -1085,6 +1087,7 @@
                 }).then(() => {
                     this.deleteRequest("/employee/basic/info/" + data.workid).then(resp => {
                         if (resp) {
+                            this.page=1;
                             this.initEmps();
                         }
                     })
@@ -1132,6 +1135,7 @@
                 }).then(() => {
                     this.postRequest("/employee/basic/info/deleteemps/",this.multipleSelection).then(resp => {
                         if (resp) {
+                            this.page=1;
                             this.initEmps();
                         }
                     })
