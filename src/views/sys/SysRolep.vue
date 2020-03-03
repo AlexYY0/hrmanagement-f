@@ -172,7 +172,13 @@
                     this.loading = false;
                     if (resp) {
                         this.roles = resp.data;
-                        this.total=resp.total;
+                        this.total = resp.total;
+                        if(resp.data.length===0){
+                            this.$notify.error({
+                                title: '错误',
+                                message: '本页没有数据，请翻页或添加数据！'
+                            });
+                        }
                     }
                 })
             }
@@ -193,6 +199,6 @@
 
     .permissManaMain {
         margin-top: 10px;
-        width: 700px;
+        width: 55%;
     }
 </style>

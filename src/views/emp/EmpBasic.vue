@@ -1,7 +1,7 @@
 <template>
     <div>
         <div>
-            <div style="display: flex;justify-content: space-between">
+            <div class="top-menu">
                 <div>
                     <el-input placeholder="请输入员工名进行搜索，可以直接回车搜索..." prefix-icon="el-icon-search"
                               clearable
@@ -34,7 +34,7 @@
                         导出数据
                     </el-button>
                     <el-button type="primary" icon="el-icon-plus" @click="showAddEmpView">
-                        添加用户
+                        添加员工
                     </el-button>
                 </div>
             </div>
@@ -76,8 +76,7 @@
                                     v-model="searchDepView">
                                 <el-tree default-expand-all :data="allDeps" :props="defaultProps"
                                          @node-click="searvhViewHandleNodeClick"></el-tree>
-                                <div slot="reference"
-                                     style="width: 130px;display: inline-flex;font-size: 13px;border: 1px solid #dedede;height: 26px;border-radius: 5px;cursor: pointer;align-items: center;padding-left: 8px;box-sizing: border-box;margin-left: 3px"
+                                <div class="select-dep" slot="reference"
                                      @click="showSearchDepView">{{inputDepName}}
                                 </div>
                             </el-popover>
@@ -274,11 +273,11 @@
                 :visible.sync="dialogVisible"
                 width="80%">
             <div>
-                <el-form :model="emp" :rules="rules" ref="empForm" :disabled="NoModify">
+                <el-form :model="emp" status-icon :rules="rules" ref="empForm" :disabled="NoModify">
                     <el-row>
                         <el-col :span="6">
                             <el-form-item label="姓名:" prop="empname">
-                                <el-input size="mini" style="width: 150px" prefix-icon="el-icon-edit" v-model="emp.empname"
+                                <el-input clearable size="mini" style="width: 150px" prefix-icon="el-icon-edit" v-model="emp.empname"
                                           placeholder="请输入员工姓名"></el-input>
                             </el-form-item>
                         </el-col>
@@ -330,19 +329,19 @@
                         </el-col>
                         <el-col :span="5">
                             <el-form-item label="籍贯:" prop="nativeplace">
-                                <el-input size="mini" style="width: 150px" prefix-icon="el-icon-edit"
+                                <el-input clearable size="mini" style="width: 150px" prefix-icon="el-icon-edit"
                                           v-model="emp.nativeplace" placeholder="请输入籍贯"></el-input>
                             </el-form-item>
                         </el-col>
                         <el-col :span="6">
                             <el-form-item label="电子邮箱:" prop="email">
-                                <el-input size="mini" style="width: 150px" prefix-icon="el-icon-message"
+                                <el-input clearable size="mini" style="width: 150px" prefix-icon="el-icon-message"
                                           v-model="emp.email" placeholder="请输入电子邮箱"></el-input>
                             </el-form-item>
                         </el-col>
                         <el-col :span="7">
                             <el-form-item label="联系地址:" prop="address">
-                                <el-input size="mini" style="width: 200px" prefix-icon="el-icon-edit"
+                                <el-input clearable size="mini" style="width: 200px" prefix-icon="el-icon-edit"
                                           v-model="emp.address" placeholder="请输入联系地址"></el-input>
                             </el-form-item>
                         </el-col>
@@ -356,7 +355,7 @@
                         </el-col>
                         <el-col :span="5">
                             <el-form-item label="学历:" prop="hdegree">
-                                <el-select v-model="emp.hdegree" placeholder="请输入最高学历" size="mini"
+                                <el-select clearable v-model="emp.hdegree" placeholder="请输入最高学历" size="mini"
                                            style="width: 150px;">
                                     <el-option
                                             v-for="item in hdegrees"
@@ -369,13 +368,13 @@
                         </el-col>
                         <el-col :span="6">
                             <el-form-item label="毕业院校:" prop="school">
-                                <el-input size="mini" style="width: 150px" prefix-icon="el-icon-edit"
+                                <el-input clearable size="mini" style="width: 150px" prefix-icon="el-icon-edit"
                                           v-model="emp.school" placeholder="请输入毕业院校名称"></el-input>
                             </el-form-item>
                         </el-col>
                         <el-col :span="7">
                             <el-form-item label="专业名称:" prop="specialty">
-                                <el-input size="mini" style="width: 200px" prefix-icon="el-icon-edit"
+                                <el-input clearable size="mini" style="width: 200px" prefix-icon="el-icon-edit"
                                           v-model="emp.specialty" placeholder="请输入专业名称"></el-input>
                             </el-form-item>
                         </el-col>
@@ -383,7 +382,7 @@
                     <el-row type="flex">
                         <el-col :span="8">
                             <el-form-item label="身份证号码:" prop="idcard">
-                                <el-input size="mini" style="width: 180px" prefix-icon="el-icon-edit"
+                                <el-input clearable size="mini" style="width: 180px" prefix-icon="el-icon-edit"
                                           v-model="emp.idcard" placeholder="请输入身份证号码"></el-input>
                             </el-form-item>
                         </el-col>
@@ -413,8 +412,8 @@
                         </el-col>
                         <el-col :span="7">
                             <el-form-item label="电话号码:" prop="cellphone">
-                                <el-input size="mini" style="width: 200px" prefix-icon="el-icon-phone"
-                                          v-model="emp.cellphone" placeholder="电话号码"></el-input>
+                                <el-input clearable size="mini" style="width: 200px" prefix-icon="el-icon-phone"
+                                          v-model.number="emp.cellphone" placeholder="电话号码"></el-input>
                             </el-form-item>
                         </el-col>
                     </el-row>
@@ -444,8 +443,8 @@
                 </el-form>
             </div>
             <span slot="footer" class="dialog-footer">
-            <el-button @click="dialogVisible = false">取 消</el-button>
-            <el-button type="primary" @click="doAddEmp">确 定</el-button>
+                <el-button @click="dialogVisible = false">取 消</el-button>
+                <el-button type="primary" @click="doAddEmp">确 定</el-button>
             </span>
         </el-dialog>
         <el-drawer
@@ -545,7 +544,7 @@
                         title="添加人事调动"
                         :visible.sync="empChangeDialogForm"
                         width="30%">
-                    <el-form :model="empchange" :rules="rules" ref="empChangeForm">
+                    <el-form :model="empchange" status-icon :rules="rules" ref="empChangeForm">
                         <el-form-item label="员工工号: " prop="workid">
                             <el-input style="width: 200px" v-model="empchange.workid" prefix-icon="el-icon-edit" disabled></el-input>
                         </el-form-item>
@@ -575,13 +574,13 @@
                         </el-form-item>
                         <el-form-item label="调动原因: " prop="empchanremark">
                             <el-input
-                                    style="width: 400px"
+                                    style="width: 100%"
                                     type="textarea"
                                     :autosize="{ minRows: 2, maxRows: 7}"
                                     placeholder="请输入内容"
                                     v-model="empchange.empchanremark"
                                     minlength="10"
-                                    maxlength="200"
+                                    maxlength="255"
                                     show-word-limit>
                             </el-input>
                         </el-form-item>
@@ -617,6 +616,9 @@
                             搜索
                         </el-button>
                     </div>
+                    <div>
+                        <el-button type="warning" icon="el-icon-plus" circle @click="addContract"></el-button>
+                    </div>
                 </div>
                 <div style="margin-top: 10px">
                     <el-table
@@ -648,10 +650,7 @@
                                 label="签定日期"
                                 sortable>
                         </el-table-column>
-                        <el-table-column fixed="right" align="center">
-                            <template slot="header" slot-scope="scope">
-                                <el-button icon="el-icon-plus" circle @click="addContract"></el-button>
-                            </template>
+                        <el-table-column label="操作" fixed="right" align="center">
                             <template slot-scope="scope">
                                 <el-button
                                         type="primary"
@@ -676,7 +675,7 @@
                         :title="contracttitle"
                         :visible.sync="contractDialogForm"
                         width="80%">
-                    <el-form :disabled="isContractChange" :model="contract" :rules="rules" ref="contractForm">
+                    <el-form :disabled="isContractChange" :model="contract" status-icon :rules="rules" ref="contractForm">
                         <el-row>
                             <el-col :span="6">
                                 <el-form-item label="员工工号: " prop="workid">
@@ -784,7 +783,7 @@
                 searchType: null,
                 empChangeDrawer: false,
                 contractDrawer: false,
-                direction:'rtl',
+                direction: 'rtl',
                 searchEmpChangeData: null,
                 searchContractData: null,
                 title: '',
@@ -883,22 +882,30 @@
                         trigger: 'blur'
                     }],
                     marital: [{required: true, message: '请输入婚姻状况', trigger: 'blur'}],
-                    nation: [{required: true, message: '请输入民族', trigger: 'blur'}],
+                    nation: [{required: true, message: '请选择民族', trigger: 'change'}],
                     nativeplace: [{required: true, message: '请输入籍贯', trigger: 'blur'}],
-                    politic: [{required: true, message: '请输入政治面貌', trigger: 'blur'}],
+                    politic: [{required: true, message: '请选择政治面貌', trigger: 'change'}],
                     email: [{required: true, message: '请输入邮箱地址', trigger: 'blur'}, {
                         type: 'email',
                         message: '邮箱格式不正确',
                         trigger: 'blur'
                     }],
-                    cellphone: [{required: true, message: '请输入电话号码', trigger: 'blur'}],
+                    cellphone: [{required: true, message: '请输入电话号码', trigger: 'blur'},{
+                        type: 'number',
+                        message: '电话号码必须为数字值',
+                        trigger: 'blur'
+                    },{
+                        pattern:/[0-9]{11}/,
+                        message: '电话号码格式不正确',
+                        trigger: 'blur'
+                    }],
                     address: [{required: true, message: '请输入员工地址', trigger: 'blur'}],
-                    depid: [{required: true, message: '请输入部门名称', trigger: 'blur'}],
+                    depid: [{required: true, message: '请选择部门名称', trigger: 'change'}],
                     workstate: [{required: true, message: '请输入工作状态', trigger: 'blur'}],
                     school: [{required: true, message: '请输入毕业院校', trigger: 'blur'}],
                     specialty: [{required: true, message: '请输入专业', trigger: 'blur'}],
                     hdegree: [{required: true, message: '请输入学历', trigger: 'blur'}],
-                    afterdepid: [{required: true, message: '请输入部门名称', trigger: 'blur'}],
+                    afterdepid: [{required: true, message: '请选择部门名称', trigger: 'change'}],
                     empchandata: [{required: true, message: '请输入调动日期', trigger: 'blur'}],
                     empchanremark: [{required: true, message: '请输入调动原因', trigger: 'blur'}],
                     begincontract: [{required: true, message: '请输入合同生效日期', trigger: 'blur'}],
@@ -924,7 +931,12 @@
                 this.importDataDisabled = false;
                 this.initEmps();
             },
-            beforeUpload() {
+            beforeUpload(file) {
+                const isExcel = file.type === "application/vnd.ms-excel";
+                if (!isExcel) {
+                    this.$message.error("上传文件只能是 xlsx/xls 格式!");
+                    return false;
+                }
                 this.importDataBtnText = '正在导入';
                 this.importDataBtnIcon = 'el-icon-loading';
                 this.importDataDisabled = true;
@@ -1004,10 +1016,12 @@
                 this.getMaxWordID();
                 this.NoModify=false;
                 this.dialogVisible = true;
+                this.$refs['empForm'].resetFields();
             },
             addEmpChange(){
                 this.emptyEmpChange();
                 this.empChangeDialogForm=true;
+                this.$refs['empChangeForm'].resetFields();
             },
             addContract(){
                 this.emptyContract();
@@ -1016,6 +1030,7 @@
                 this.NotUploadImage = false;
                 this.isContractChange = false;
                 this.contractDialogForm=true;
+                this.$refs['contractForm'].resetFields();
                 this.getRequest("/employee/basic/contractinfo/token").then(resp => {
                     if (resp) {
                         this.uptoken.token = resp;
@@ -1025,7 +1040,7 @@
             },
             showEditEmpView(data) {
                 this.title = '编辑员工信息';
-                this.emp = data;
+                this.emp = Object.assign({},data);
                 this.inputDepName = data.department.depname;
                 this.NoModify=false;
                 this.dialogVisible = true;
@@ -1087,7 +1102,6 @@
                 }).then(() => {
                     this.deleteRequest("/employee/basic/info/" + data.workid).then(resp => {
                         if (resp) {
-                            this.page=1;
                             this.initEmps();
                         }
                     })
@@ -1135,7 +1149,6 @@
                 }).then(() => {
                     this.postRequest("/employee/basic/info/deleteemps/",this.multipleSelection).then(resp => {
                         if (resp) {
-                            this.page=1;
                             this.initEmps();
                         }
                     })
@@ -1214,6 +1227,12 @@
                     if (resp) {
                         this.emps = resp.data;
                         this.total = resp.total;
+                        if(resp.data.length===0){
+                            this.$notify.error({
+                                title: '错误',
+                                message: '本页没有数据，请翻页或添加数据！'
+                            });
+                        }
                     }
                 });
             },
@@ -1380,6 +1399,23 @@
 </script>
 
 <style scoped>
+    .top-menu{
+        display: flex;
+        justify-content: space-between;
+    }
+    .select-dep{
+        width: 130px;
+        display: inline-flex;
+        font-size: 13px;
+        border: 1px solid #dedede;
+        height: 26px;
+        border-radius: 5px;
+        cursor: pointer;
+        align-items: center;
+        padding-left: 8px;
+        box-sizing: border-box;
+        margin-left: 3px;
+    }
     /* 可以设置不同的进入和离开动画 */
     /* 设置持续时间和动画函数 */
     /deep/ .slide-fade-enter-active {

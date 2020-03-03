@@ -67,11 +67,7 @@
                                         :fetch-suggestions="querySearch"
                                         placeholder="输入领导姓名自动查找"
                                         @select="handleSelect">
-                                    <i
-                                            class="el-icon-edit el-input__icon"
-                                            slot="suffix"
-                                            @click="handleIconClick">
-                                    </i>
+                                    <i class="el-icon-edit el-input__icon" slot="suffix" @click="handleIconClick"></i>
                                     <template slot-scope="{ item }">
                                         <div class="empname">{{ item.value }}</div>
                                         <span class="workid">工号: {{ item.workid }}</span>
@@ -285,8 +281,8 @@
             },
             //以下是实时搜索
             querySearch(queryString, cb) {
-                var employees = this.employees;
-                var results = queryString ? employees.filter(this.createFilter(queryString)) : employees;
+                let employees = this.employees;
+                let results = queryString ? employees.filter(this.createFilter(queryString)) : employees;
                 // 调用 callback 返回建议列表的数据
                 cb(results);
             },
@@ -304,7 +300,6 @@
             },
             handleSelect(item) {
                 this.dep.leaderid=item.workid;
-                console.log(item);
             },
             handleIconClick(ev) {
                 console.log(ev);
