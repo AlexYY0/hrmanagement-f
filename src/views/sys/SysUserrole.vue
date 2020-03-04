@@ -53,7 +53,7 @@
                                 <el-button slot="reference" icon="el-icon-more" type="text"></el-button>
                             </el-popover>
                         </div>
-                        <div>备注：{{user.userremark}}</div>
+                        <div class="remark">备注：{{user.userremark}}</div>
                     </div>
                 </div>
             </el-card>
@@ -148,7 +148,7 @@
                 })
             };
             let validUsername = (rule, value, callback) => {
-                this.getRequest("/system/userrole/find/" + value).then(resp => {
+                this.getRequest("/user/check/username/" + value).then(resp => {
                     if (resp) {
                         callback(new Error('用户名已存在!'));
                     } else
@@ -223,6 +223,7 @@
                 this.emptyUser();
                 this.getAllemployees();
                 this.addUserDialogForm=true;
+                this.$refs['userForm'].resetFields();
             },
             confirmAddUser(){
                 this.$refs['userForm'].validate(valid => {
@@ -382,6 +383,13 @@
         font-size: 12px;
         color: #409eff;
     }
+    .user-container .remark{
+        margin-right: 0;
+        margin-bottom: 0;
+        width: 100%;
+        white-space: normal;
+        word-break: break-all;
+    }
     .userinfo-container {
         margin-top: 20px;
     }
@@ -391,6 +399,7 @@
         justify-content: center;
     }
     .userface-img {
+        object-fit: cover;
         width: 72px;
         height: 72px;
         border-radius: 72px;

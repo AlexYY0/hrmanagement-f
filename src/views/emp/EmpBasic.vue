@@ -982,7 +982,7 @@
                     specialty: "",
                     hdegree: ""
                 };
-                this.inputDepName = '';
+                this.inputDepName = '所属部门';
             },
             emptyEmpChange(){
                 this.empchange = {
@@ -1031,11 +1031,11 @@
                 this.isContractChange = false;
                 this.contractDialogForm=true;
                 this.$refs['contractForm'].resetFields();
-                this.getRequest("/employee/basic/contractinfo/token").then(resp => {
+                this.getRequest("/user/token").then(resp => {
                     if (resp) {
                         this.uptoken.token = resp;
                     }
-                })
+                });
                 this.$refs.uploadImage.clearFiles();
             },
             showEditEmpView(data) {

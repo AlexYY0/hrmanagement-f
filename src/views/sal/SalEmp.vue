@@ -203,10 +203,39 @@
                     </el-table-column>
                     <el-table-column
                             header-align="center"
-                            prop="welfare.welname"
                             width="100"
                             align="left"
                             label="福利补贴">
+                        <template slot-scope="scope">
+                            <el-tooltip placement="right" v-if="scope.row.welfare">
+                                <div slot="content">
+                                    <table>
+                                        <tr>
+                                            <td>交通补贴</td>
+                                            <td>{{scope.row.welfare.traffic}}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>餐饮补贴</td>
+                                            <td>{{scope.row.welfare.catering}}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>通信补贴</td>
+                                            <td>{{scope.row.welfare.communication}}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>奖金</td>
+                                            <td>{{scope.row.welfare.bonus}}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>其它</td>
+                                            <td>{{scope.row.welfare.other}}</td>
+                                        </tr>
+                                    </table>
+                                </div>
+                                <el-tag>{{scope.row.welfare.welname}}</el-tag>
+                            </el-tooltip>
+                            <el-tag v-else>暂未设置</el-tag>
+                        </template>
                     </el-table-column>
                     <el-table-column
                             header-align="center"
@@ -602,7 +631,7 @@
                         </el-form-item>
                     </el-form>
                     <div slot="footer" class="dialog-footer">
-                        <el-button @click="empSalAdjDialogForm = false">确 定</el-button>
+                        <el-button type="info" @click="empSalAdjDialogForm = false">确 定</el-button>
                     </div>
                 </el-dialog>
             </div>

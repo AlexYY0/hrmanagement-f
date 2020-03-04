@@ -76,6 +76,8 @@
                             message: '已取消操作'
                         });
                     });
+                } else if (cmd == 'userinfo') {
+                    this.$router.push('/userinfo');
                 }
             }
         }
@@ -115,6 +117,7 @@
     }
 
     .el-dropdown-link img {
+        object-fit: cover;
         width: 48px;
         height: 48px;
         border-radius: 24px;
