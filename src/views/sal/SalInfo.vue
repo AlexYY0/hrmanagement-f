@@ -19,14 +19,16 @@
                     核算日期:
                     <el-date-picker
                             v-model="searchValue.payoffdata"
-                            type="daterange"
+                            type="datetimerange"
                             size="mini"
                             unlink-panels
-                            value-format="yyyy-MM-dd"
-                            range-separator="至"
+                            align="right"
+                            value-format="yyyy-MM-dd HH:mm:ss"
                             start-placeholder="开始日期"
+                            range-separator="至"
                             end-placeholder="结束日期"
-                            style="width: 200px">
+                            style="width: 320px"
+                            :default-time="['09:00:00', '18:00:00']">
                     </el-date-picker>
                     <el-input class="search-input" placeholder="请输入员工名进行搜索，可以直接回车搜索..." prefix-icon="el-icon-search"
                               clearable
@@ -257,7 +259,7 @@
                     <el-table-column
                             header-align="center"
                             prop="payoffdata"
-                            width="100"
+                            width="140"
                             align="left"
                             label="计算薪资时间">
                     </el-table-column>
@@ -438,7 +440,7 @@
                         </el-col>
                         <el-col :span="6">
                             <el-form-item label="计算薪资时间:">
-                                <el-input size="mini" style="width: 150px" prefix-icon="el-icon-edit" v-model="salInfo.payoffdata"></el-input>
+                                <el-input size="mini" style="width: 150px" v-model="salInfo.payoffdata"></el-input>
                             </el-form-item>
                         </el-col>
                     </el-row>

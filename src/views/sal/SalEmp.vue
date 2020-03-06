@@ -490,17 +490,18 @@
                                 <el-date-picker
                                         v-model="empSal.empSalAdj.sadata"
                                         size="mini"
-                                        type="date"
-                                        value-format="yyyy-MM-dd"
+                                        type="datetime"
+                                        value-format="yyyy-MM-dd HH:mm:ss"
+                                        placeholder="选择调薪日期"
                                         style="width: 200px;"
-                                        placeholder="调薪日期">
+                                        default-time="09:00:00">
                                 </el-date-picker>
                             </el-form-item>
                         </el-col>
                         <el-col v-if="isEmpSalAdj" :span="12">
                             <el-form-item label="调薪备注:" prop="empSalAdj.saremark">
                                 <el-input
-                                        style="width: 85%"
+                                        style="width: 100%"
                                         type="textarea"
                                         :autosize="{ minRows: 2, maxRows: 7}"
                                         placeholder="请输入内容"
@@ -523,21 +524,23 @@
                 title="员工薪资调整"
                 :visible.sync="empSalAdjDrawer"
                 :direction="direction"
-                size="30%"
+                size="35%"
                 :before-close="DrawerClose">
             <div style="margin:0 10px 0 10px">
                 <div style="display: flex;justify-content: space-between">
                     <div>
                         <el-date-picker
                                 v-model="searchEmpSalAdj"
-                                type="daterange"
+                                type="datetimerange"
                                 size="mini"
                                 unlink-panels
-                                value-format="yyyy-MM-dd"
-                                range-separator="至"
+                                align="right"
+                                value-format="yyyy-MM-dd HH:mm:ss"
                                 start-placeholder="开始日期"
+                                range-separator="至"
                                 end-placeholder="结束日期"
-                                style="margin-right: 10px;width: 200px">
+                                style="margin-right: 10px;width: 320px"
+                                :default-time="['09:00:00', '18:00:00']">
                         </el-date-picker>
                         <el-button icon="el-icon-search" type="primary" @click="empSalAdjSearch">
                             搜索
@@ -545,7 +548,7 @@
                     </div>
                     <div>
                         <el-button style="display: inline-flex" type="primary" icon="el-icon-plus" @click="addEmpSalAdj">
-                            员工薪资调整
+                            薪资调整
                         </el-button>
                     </div>
                 </div>
@@ -577,7 +580,7 @@
                                 header-align="center"
                                 prop="sadata"
                                 label="调薪日期"
-                                sortable>
+                                sortable width="140">
                         </el-table-column>
                         <el-table-column label="操作" fixed="right" align="center">
                             <template slot-scope="scope">
@@ -611,10 +614,12 @@
                         <el-form-item label="调薪日期: " prop="sadata">
                             <el-date-picker
                                     v-model="empSalAdj.sadata"
-                                    type="date"
-                                    value-format="yyyy-MM-dd"
-                                    placeholder="请选择日期"
-                                    style="width: 200px">
+                                    size="mini"
+                                    type="datetime"
+                                    value-format="yyyy-MM-dd HH:mm:ss"
+                                    placeholder="选择调薪日期"
+                                    style="width: 200px;"
+                                    default-time="09:00:00">
                             </el-date-picker>
                         </el-form-item>
                         <el-form-item label="调薪备注: " prop="saremark">
@@ -814,12 +819,12 @@
             showSearchDepView() {
                 this.searchDepView = !this.searchDepView;
             },
-            onError(err, file, fileList) {
+            onError() {
                 this.importDataBtnText = '导入数据';
                 this.importDataBtnIcon = 'el-icon-upload2';
                 this.importDataDisabled = false;
             },
-            onSuccess(response, file, fileList) {
+            onSuccess() {
                 this.importDataBtnText = '导入数据';
                 this.importDataBtnIcon = 'el-icon-upload2';
                 this.importDataDisabled = false;
@@ -945,7 +950,7 @@
                                 if (resp) {
                                     //this.initEmpSals();
                                 }
-                            })
+                            });
                             let empSalAdj=this.empSal.empSalAdj;
                             empSalAdj.workid=this.empSal.workid;
                             this.postRequest("/salary/employee/saladj/", empSalAdj).then(resp => {

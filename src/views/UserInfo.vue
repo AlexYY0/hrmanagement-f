@@ -204,7 +204,6 @@
             updatePassword(){
                 this.$refs['passwordForm'].validate((valid) => {
                     if (valid) {
-                        this.passwordForm.userid = this.user.userid;
                         this.putRequest("/user/password", this.passwordForm).then(resp => {
                             if (resp) {
                                 this.getRequest("/logout");

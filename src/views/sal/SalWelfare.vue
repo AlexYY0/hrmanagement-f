@@ -277,7 +277,7 @@
                 this.editWelDialog=true;
             },
             deleteWel(data){
-                this.$confirm('此操作将永久删除编号为【' + data.welid + '】的福利补贴, 是否继续?', '提示', {
+                this.$confirm('此操作将永久删除名称为【' + data.welname + '】的福利补贴, 是否继续?', '提示', {
                     confirmButtonText: '确定',
                     cancelButtonText: '取消',
                     type: 'warning'
