@@ -60,19 +60,18 @@
                                 <el-tag>领导工号</el-tag>
                             </td>
                             <td>
-                                <el-autocomplete
-                                        popper-class="findAllEmp-autocomplete"
-                                        :popper-append-to-body="false"
-                                        v-model="dep.leaderid"
-                                        :fetch-suggestions="querySearch"
-                                        placeholder="输入领导姓名自动查找"
-                                        @select="handleSelect">
-                                    <i class="el-icon-edit el-input__icon" slot="suffix" @click="handleIconClick"></i>
-                                    <template slot-scope="{ item }">
-                                        <div class="empname">{{ item.value }}</div>
+                                <el-select
+                                        :popper-append-to-body="false" class="findAllEmp-autocomplete"
+                                        clearable v-model="dep.leaderid" filterable placeholder="请选择领导姓名">
+                                    <el-option
+                                            v-for="item in employees"
+                                            :key="item.workid"
+                                            :label="item.label"
+                                            :value="item.workid">
+                                        <div class="empname">{{ item.label }}</div>
                                         <span class="workid">工号: {{ item.workid }}</span>
-                                    </template>
-                                </el-autocomplete>
+                                    </el-option>
+                                </el-select>
                             </td>
                         </tr>
                     </table>
@@ -104,26 +103,21 @@
                         </tr>
                         <tr>
                             <td>
-                                <el-tag>领导工号</el-tag>
+                                <el-tag>领导姓名</el-tag>
                             </td>
                             <td>
-                                <el-autocomplete
-                                        popper-class="findAllEmp-autocomplete"
-                                        :popper-append-to-body="false"
-                                        v-model="dep.leaderid"
-                                        :fetch-suggestions="querySearch"
-                                        placeholder="输入领导姓名自动查找"
-                                        @select="handleSelect">
-                                    <i
-                                            class="el-icon-edit el-input__icon"
-                                            slot="suffix"
-                                            @click="handleIconClick">
-                                    </i>
-                                    <template slot-scope="{ item }">
-                                        <div class="empname">{{ item.value }}</div>
+                                <el-select
+                                        :popper-append-to-body="false" class="findAllEmp-autocomplete"
+                                        clearable v-model="dep.leaderid" filterable placeholder="请选择领导姓名">
+                                    <el-option
+                                            v-for="item in employees"
+                                            :key="item.workid"
+                                            :label="item.label"
+                                            :value="item.workid">
+                                        <div class="empname">{{ item.label }}</div>
                                         <span class="workid">工号: {{ item.workid }}</span>
-                                    </template>
-                                </el-autocomplete>
+                                    </el-option>
+                                </el-select>
                             </td>
                         </tr>
                     </table>
@@ -166,14 +160,13 @@
         },
         mounted() {
             this.initDeps();
-            this.getAllemployees();
         },
         methods: {
             initDep() {
                 this.dep = {
                     depname: '',
                     parentid: -1
-                }
+                };
                 this.pname = '';
             },
             updateDep2Deps(deps, dep){
@@ -273,37 +266,17 @@
                     if (resp) {
                         this.deps = resp;
                     }
-                })
-            },
-            filterNode(value, data) {
-                if (!value) return true;
-                return data.depname.indexOf(value) !== -1;
-            },
-            //以下是实时搜索
-            querySearch(queryString, cb) {
-                let employees = this.employees;
-                let results = queryString ? employees.filter(this.createFilter(queryString)) : employees;
-                // 调用 callback 返回建议列表的数据
-                cb(results);
-            },
-            createFilter(queryString) {
-                return (employee) => {
-                    return (employee.value.toLowerCase().indexOf(queryString.toLowerCase()) !== -1);
-                };
-            },
-            getAllemployees(){
+                });
                 this.getRequest("/organization/management/employee/").then(resp => {
                     if (resp) {
                         this.employees = resp;
                     }
                 })
             },
-            handleSelect(item) {
-                this.dep.leaderid=item.workid;
+            filterNode(value, data) {
+                if (!value) return true;
+                return data.depname.indexOf(value) !== -1;
             },
-            handleIconClick(ev) {
-                console.log(ev);
-            }
         }
     }
 </script>
@@ -317,6 +290,7 @@
     }
     /deep/ .findAllEmp-autocomplete li{
         line-height: normal;
+        height: 50px;
         padding: 7px;
     }
     /deep/ .findAllEmp-autocomplete li .empname {

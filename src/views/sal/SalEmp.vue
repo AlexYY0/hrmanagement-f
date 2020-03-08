@@ -274,22 +274,20 @@
                 <el-form :model="empSal" status-icon :rules="rules" ref="empSalForm" :disabled="NoModify">
                     <el-row>
                         <el-col v-if="!isEmpSalAdj" :span="6">
-                            <el-form-item label="员工工号:" prop="workid">
-                                <el-autocomplete
-                                        clearable
+                            <el-form-item label="员工姓名:" prop="workid">
+                                <el-select
                                         style="width: 200px"
-                                        popper-class="findAllEmp-autocomplete"
-                                        :popper-append-to-body="false"
-                                        v-model="empSal.workid"
-                                        :fetch-suggestions="querySearch"
-                                        placeholder="输入员工姓名自动查找"
-                                        @select="handleSelect">
-                                    <i class="el-icon-edit el-input__icon" slot="prefix" @click="handleIconClick"></i>
-                                    <template slot-scope="{ item }">
-                                        <div class="empname">{{ item.value }}</div>
+                                        :popper-append-to-body="false" class="findAllEmp-autocomplete"
+                                        clearable v-model="empSal.workid" filterable placeholder="请选择员工姓名">
+                                    <el-option
+                                            v-for="item in employees"
+                                            :key="item.workid"
+                                            :label="item.label"
+                                            :value="item.workid">
+                                        <div class="empname">{{ item.label }}</div>
                                         <span class="workid">工号: {{ item.workid }}</span>
-                                    </template>
-                                </el-autocomplete>
+                                    </el-option>
+                                </el-select>
                             </el-form-item>
                         </el-col>
                         <el-col v-if="isEmpSalAdj" :span="6">
@@ -790,6 +788,16 @@
                 } else {
                     this.allDeps = JSON.parse(window.sessionStorage.getItem("deps"));
                 }
+                if(!window.sessionStorage.getItem("emps")){
+                    this.getRequest("/organization/management/employee/").then(resp => {
+                        if (resp) {
+                            this.employees = resp;
+                            window.sessionStorage.setItem("emps", JSON.stringify(resp));
+                        }
+                    })
+                } else {
+                    this.employees = JSON.parse(window.sessionStorage.getItem("emps"));
+                }
                 if (!window.sessionStorage.getItem("speadds")) {
                     this.getRequest("/salary/specialadditionaldeduction/?page=-1&size=-1").then(resp => {
                         if (resp) {
@@ -895,7 +903,6 @@
             },
             showAddEmpSalView(){
                 this.emptyEmpSal();
-                this.getAllemployees();
                 this.title = '添加员工新薪酬';
                 this.isEmpSalAdj=false;
                 this.NoModify=false;
@@ -991,31 +998,6 @@
                 this.page = currentPage;
                 this.initSads();
             },
-            //以下是实时搜索
-            querySearch(queryString, cb) {
-                let employees = this.employees;
-                let results = queryString ? employees.filter(this.createFilter(queryString)) : employees;
-                // 调用 callback 返回建议列表的数据
-                cb(results);
-            },
-            createFilter(queryString) {
-                return (employee) => {
-                    return (employee.value.toLowerCase().indexOf(queryString.toLowerCase()) !== -1);
-                };
-            },
-            getAllemployees(){
-                this.getRequest("/organization/management/employee/").then(resp => {
-                    if (resp) {
-                        this.employees = resp;
-                    }
-                })
-            },
-            handleSelect(item) {
-                this.empSal.workid=item.workid;
-            },
-            handleIconClick(ev) {
-                console.log(ev);
-            },
             moreCommand(command){
                 switch (command.command) {
                     case "empSalAdj":
@@ -1108,6 +1090,7 @@
     }
     /deep/ .findAllEmp-autocomplete li{
         line-height: normal;
+        height: 50px;
         padding: 7px;
     }
     /deep/ .findAllEmp-autocomplete li .empname {

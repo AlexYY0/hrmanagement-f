@@ -73,22 +73,20 @@
             :visible.sync="addUserDialogForm"
             width="30%">
             <el-form :model="user" status-icon :rules="rules" ref="userForm">
-                <el-form-item label="员工工号: " prop="workid">
-                    <el-autocomplete
-                            clearable
+                <el-form-item label="员工姓名: " prop="workid">
+                    <el-select
                             style="width: 250px"
-                            popper-class="findAllEmp-autocomplete"
-                            :popper-append-to-body="false"
-                            v-model="user.workid"
-                            :fetch-suggestions="querySearch"
-                            placeholder="输入员工姓名自动查找"
-                            @select="handleSelect">
-                        <i class="el-icon-edit el-input__icon" slot="prefix" @click="handleIconClick"></i>
-                        <template slot-scope="{ item }">
-                            <div class="empname">{{ item.value }}</div>
+                            :popper-append-to-body="false" class="findAllEmp-autocomplete"
+                            clearable v-model="user.workid" filterable placeholder="请选择领导姓名">
+                        <el-option
+                                v-for="item in employees"
+                                :key="item.workid"
+                                :label="item.label"
+                                :value="item.workid">
+                            <div class="empname">{{ item.label }}</div>
                             <span class="workid">工号: {{ item.workid }}</span>
-                        </template>
-                    </el-autocomplete>
+                        </el-option>
+                    </el-select>
                 </el-form-item>
                 <el-form-item label="员工账号: " prop="username">
                     <el-input clearable style="width: 250px" prefix-icon="el-icon-edit" v-model="user.username"
@@ -206,6 +204,7 @@
         },
         mounted() {
             this.initUsers();
+            this.initData();
         },
         methods: {
             emptyUser(){
@@ -221,7 +220,6 @@
             },
             addUser(){
                 this.emptyUser();
-                this.getAllemployees();
                 this.addUserDialogForm=true;
                 this.$refs['userForm'].resetFields();
             },
@@ -341,6 +339,18 @@
                     }
                 })
             },
+            initData(){
+                if(!window.sessionStorage.getItem("emps")){
+                    this.getRequest("/organization/management/employee/").then(resp => {
+                        if (resp) {
+                            this.employees = resp;
+                            window.sessionStorage.setItem("emps", JSON.stringify(resp));
+                        }
+                    })
+                } else {
+                    this.employees = JSON.parse(window.sessionStorage.getItem("emps"));
+                }
+            },
             sizeChange(currentSize) {
                 this.size = currentSize;
                 this.initUsers();
@@ -349,31 +359,6 @@
                 this.page = currentPage;
                 this.initUsers();
             },
-            //以下是实时搜索
-            querySearch(queryString, cb) {
-                let employees = this.employees;
-                let results = queryString ? employees.filter(this.createFilter(queryString)) : employees;
-                // 调用 callback 返回建议列表的数据
-                cb(results);
-            },
-            createFilter(queryString) {
-                return (employee) => {
-                    return (employee.value.toLowerCase().indexOf(queryString.toLowerCase()) !== -1);
-                };
-            },
-            getAllemployees(){
-                this.getRequest("/organization/management/employee/").then(resp => {
-                    if (resp) {
-                        this.employees = resp;
-                    }
-                })
-            },
-            handleSelect(item) {
-                this.user.workid=item.workid;
-            },
-            handleIconClick(ev) {
-                console.log(ev);
-            }
         }
     }
 </script>
@@ -416,6 +401,7 @@
     }
     /deep/ .findAllEmp-autocomplete li{
         line-height: normal;
+        height: 50px;
         padding: 7px;
     }
     /deep/ .findAllEmp-autocomplete li .empname {

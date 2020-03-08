@@ -568,7 +568,7 @@
                                     v-model="empchange.empchandata"
                                     type="date"
                                     value-format="yyyy-MM-dd"
-                                    placeholder="请选择日期"
+                                    placeholder="请选择排班周日日期"
                                     style="width: 200px">
                             </el-date-picker>
                         </el-form-item>

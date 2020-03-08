@@ -134,6 +134,12 @@
                     this.businesshoursLoading = false;
                     if (resp) {
                         this.businesshourss = resp;
+                        if(resp.data.length===0){
+                            this.$notify.error({
+                                title: '错误',
+                                message: '本页班次没有数据，请翻页或添加数据！'
+                            });
+                        }
                     }
                 });
             },
