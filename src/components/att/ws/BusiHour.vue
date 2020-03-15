@@ -1,5 +1,5 @@
 <template>
-    <div style="width: 45%">
+    <div style="width: 65%">
         <div>
             <div style="display: flex;justify-content: space-between">
                 <el-button type="primary" icon="el-icon-plus" @click="AddBhView">
@@ -55,6 +55,20 @@
                         width="110">
                 </el-table-column>
                 <el-table-column
+                        header-align="center"
+                        prop="beginrest"
+                        label="开始休息"
+                        align="left"
+                        width="110">
+                </el-table-column>
+                <el-table-column
+                        header-align="center"
+                        prop="endrest"
+                        label="结束休息"
+                        align="left"
+                        width="110">
+                </el-table-column>
+                <el-table-column
                         align="center"
                         fixed="right"
                         label="操作">
@@ -93,6 +107,24 @@
                             placeholder="请选择下班时间">
                     </el-time-picker>
                 </el-form-item>
+                <el-form-item label="开始休息: " prop="beginrest">
+                    <el-time-picker
+                            v-model="businesshours.beginrest"
+                            value-format="HH:mm:ss"
+                            :picker-options="{selectableRange: '00:00:00 - 23:59:59'}"
+                            style="width: 250px"
+                            placeholder="请选择开始休息">
+                    </el-time-picker>
+                </el-form-item>
+                <el-form-item label="结束休息: " prop="endrest">
+                    <el-time-picker
+                            v-model="businesshours.endrest"
+                            value-format="HH:mm:ss"
+                            :picker-options="{selectableRange: '00:00:00 - 23:59:59'}"
+                            style="width: 250px"
+                            placeholder="请选择结束休息">
+                    </el-time-picker>
+                </el-form-item>
             </el-form>
             <div slot="footer" class="dialog-footer">
                 <el-button @click="editBhDialog = false">取 消</el-button>
@@ -115,12 +147,16 @@
                 businesshours: {
                     busihoursname: "早班",
                     begintime: "18:00",
-                    endtime: "08:00"
+                    endtime: "08:00",
+                    beginrest: "12:00",
+                    endrest: "13:00"
                 },
                 rules: {
                     busihoursname: [{required: true, message: '请输入班次名称', trigger: 'blur'}],
                     begintime: [{required: true, message: '请输入上班时间', trigger: 'blur'}],
-                    endtime: [{required: true, message: '请输入下班时间', trigger: 'blur'}]
+                    endtime: [{required: true, message: '请输入下班时间', trigger: 'blur'}],
+                    beginrest: [{required: true, message: '请输入开始休息时间', trigger: 'blur'}],
+                    endrest: [{required: true, message: '请输入结束休息时间', trigger: 'blur'}]
                 }
             }
         },
@@ -147,7 +183,9 @@
                 this.businesshours = {
                     busihoursname: "",
                     begintime: "",
-                    endtime: ""
+                    endtime: "",
+                    beginrest: "",
+                    endrest: ""
                 }
             },
             batchDeleteBh(){

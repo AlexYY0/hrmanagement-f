@@ -18,7 +18,7 @@
                     </el-popover>
                     核算日期:
                     <el-date-picker
-                            v-model="searchValue.payoffdata"
+                            v-model="searchValue.payoffdate"
                             type="datetimerange"
                             size="mini"
                             unlink-panels
@@ -258,7 +258,21 @@
                     </el-table-column>
                     <el-table-column
                             header-align="center"
-                            prop="payoffdata"
+                            prop="salfirstday"
+                            width="145"
+                            align="left"
+                            label="发月薪月首日">
+                    </el-table-column>
+                    <el-table-column
+                            header-align="center"
+                            prop="salendday"
+                            width="145"
+                            align="left"
+                            label="发月薪月末日">
+                    </el-table-column>
+                    <el-table-column
+                            header-align="center"
+                            prop="payoffdate"
                             width="140"
                             align="left"
                             label="计算薪资时间">
@@ -439,8 +453,20 @@
                             </el-form-item>
                         </el-col>
                         <el-col :span="6">
+                            <el-form-item label="月薪月首日:">
+                                <el-input size="mini" style="width: 150px" prefix-icon="el-icon-edit" v-model="salInfo.salfirstday"></el-input>
+                            </el-form-item>
+                        </el-col>
+                    </el-row>
+                    <el-row>
+                        <el-col :span="6">
+                            <el-form-item label="月薪月末日:">
+                                <el-input size="mini" style="width: 150px" prefix-icon="el-icon-edit" v-model="salInfo.salendday"></el-input>
+                            </el-form-item>
+                        </el-col>
+                        <el-col :span="6">
                             <el-form-item label="计算薪资时间:">
-                                <el-input size="mini" style="width: 150px" v-model="salInfo.payoffdata"></el-input>
+                                <el-input size="mini" style="width: 150px" v-model="salInfo.payoffdate"></el-input>
                             </el-form-item>
                         </el-col>
                     </el-row>
@@ -461,7 +487,7 @@
                 searchValue: {
                     empname: null,
                     depid: null,
-                    payoffdata: null,
+                    payoffdate: null,
                 },
                 page: 1,
                 size: 10,
@@ -497,8 +523,8 @@
                 if(this.searchValue.depid){
                     url+="&depid="+this.searchValue.depid;
                 }
-                if(this.searchValue.payoffdata){
-                    url+="&payoffdata="+this.searchValue.payoffdata;
+                if(this.searchValue.payoffdate){
+                    url+="&payoffdate="+this.searchValue.payoffdate;
                 }
                 this.getRequest(url).then(resp => {
                     this.salInfoLoading = false;
@@ -548,7 +574,6 @@
                 });
             },
             checkSalInfoView(data){
-                console.log(data);
                 this.salInfo=data;
                 this.salInfoDialog=true;
             },

@@ -71,14 +71,14 @@
                 </el-table-column>
                 <el-table-column
                         header-align="center"
-                        prop="appbegindata"
+                        prop="appbegindate"
                         width="140"
                         align="left"
                         label="开始时间">
                 </el-table-column>
                 <el-table-column
                         header-align="center"
-                        prop="appenddata"
+                        prop="appenddate"
                         width="140"
                         align="left"
                         label="结束时间">
@@ -92,7 +92,7 @@
                 </el-table-column>
                 <el-table-column
                         header-align="center"
-                        prop="appdata"
+                        prop="appdate"
                         width="140"
                         align="left"
                         label="申请时间">
@@ -178,9 +178,9 @@
                     </el-row>
                     <el-row>
                         <el-col :span="12">
-                            <el-form-item label="开始时间:" prop="appbegindata">
+                            <el-form-item label="开始时间:" prop="appbegindate">
                                 <el-date-picker
-                                        v-model="appatt.appbegindata"
+                                        v-model="appatt.appbegindate"
                                         size="mini"
                                         type="datetime"
                                         value-format="yyyy-MM-dd HH:mm:ss"
@@ -191,9 +191,9 @@
                             </el-form-item>
                         </el-col>
                         <el-col :span="12">
-                            <el-form-item label="结束时间:" prop="appenddata">
+                            <el-form-item label="结束时间:" prop="appenddate">
                                 <el-date-picker
-                                        v-model="appatt.appenddata"
+                                        v-model="appatt.appenddate"
                                         size="mini"
                                         type="datetime"
                                         value-format="yyyy-MM-dd HH:mm:ss"
@@ -211,9 +211,9 @@
                             </el-form-item>
                         </el-col>
                         <el-col :span="12">
-                            <el-form-item label="申请时间:" prop="appdata">
+                            <el-form-item label="申请时间:" prop="appdate">
                                 <el-date-picker
-                                        v-model="appatt.appdata"
+                                        v-model="appatt.appdate"
                                         size="mini"
                                         type="datetime"
                                         value-format="yyyy-MM-dd HH:mm:ss"
@@ -252,24 +252,24 @@
                     workid: 1,
                     category: '请假',
                     reason: '生病',
-                    appbegindata: '2019-08-05 09:00:00',
-                    appenddata: '2019-08-05 18:00:00',
+                    appbegindate: '2019-08-05 09:00:00',
+                    appenddate: '2019-08-05 18:00:00',
                     total: 8,
-                    appdata: '2019-08-05 07:00:00',
+                    appdate: '2019-08-05 07:00:00',
                     issubmit: false
                 },
                 rules: {
                     workid: [{required: true, message: '请输入工号', trigger: 'blur'}],
                     category: [{required: true, message: '请选择申请类别', trigger: 'change'}],
                     reason: [{required: true, message: '请输入申请原因', trigger: 'blur'}],
-                    appbegindata: [{required: true, message: '请选择申请开始时间', trigger: 'blur'}],
-                    appenddata: [{required: true, message: '请选择申请结束时间', trigger: 'blur'}],
+                    appbegindate: [{required: true, message: '请选择申请开始时间', trigger: 'blur'}],
+                    appenddate: [{required: true, message: '请选择申请结束时间', trigger: 'blur'}],
                     total: [{required: true, message: '请输入总计时间', trigger: 'blur'},{
                         type: 'number',
                         message: '总计时间必须为数字值',
                         trigger: 'blur'
                     }],
-                    appdata: [{required: true, message: '请选择申请时间', trigger: 'blur'}],
+                    appdate: [{required: true, message: '请选择申请时间', trigger: 'blur'}],
                 }
             }
         },

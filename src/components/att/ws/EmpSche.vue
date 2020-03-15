@@ -17,7 +17,8 @@
                 </el-popover>
                 排班日期:
                 <el-date-picker
-                        v-model="firstOfWeek"
+                        @change="changeAllTime"
+                        v-model="firstOfMonth"
                         type="date"
                         value-format="yyyy-MM-dd"
                         placeholder="请选择日期"
@@ -33,7 +34,7 @@
                 </el-button>
             </div>
             <div>
-                <el-button type="success" @click="autoDo"><i style="margin-right: 8px" class="fas fa-robot fa-lg"/>本周自动排班</el-button>
+                <el-button type="success" @click="autoDo"><i style="margin-right: 8px" class="fas fa-robot fa-lg"/>本月自动排班</el-button>
                 <el-button type="danger" icon="el-icon-delete" @click="batchDeleteSche">批量删除排班</el-button>
             </div>
         </div>
@@ -41,8 +42,8 @@
             <div class="datatitle">
                 <el-button type="text" @click="lastweek" style="color: black"><i class="fas fa-arrow-left fa-lg"/></el-button>
                 <div>
-                    <span>{{firstOfWeek}} 星期日</span>
-                    <span> - {{endOfWeek}} 星期六</span>
+                    <span>{{firstOfMonth}}</span>
+                    <span> - {{endOfMonth}}</span>
                 </div>
                 <el-button type="text" @click="nextweek" style="color: black"><i class="fas fa-arrow-right fa-lg"/></el-button>
             </div>
@@ -66,7 +67,7 @@
                     </el-table-column>
                     <el-table-column
                             header-align="center"
-                            prop="employee.empname"
+                            prop="empname"
                             fixed
                             align="left"
                             label="姓名"
@@ -81,19 +82,19 @@
                     </el-table-column>
                     <el-table-column
                             header-align="center"
-                            prop="department.depname"
+                            prop="depname"
                             width="110"
                             align="left"
                             label="所属部门">
                     </el-table-column>
-                    <el-table-column :label="firstOfWeek" header-align="center">
+                    <el-table-column :label="firstOfMonth" header-align="center">
                         <el-table-column
                                 header-align="center"
                                 width="110"
                                 align="left"
-                                label="星期日">
+                                :label="week(firstOfMonth)">
                             <template slot-scope="scope">
-                                <el-select v-model="scope.row.sun" placeholder="请选择排班">
+                                <el-select v-model="scope.row.d1" placeholder="请选择排班">
                                     <el-option
                                             v-for="item in businesshours"
                                             :key="item.busihoursid"
@@ -104,14 +105,14 @@
                             </template>
                         </el-table-column>
                     </el-table-column>
-                    <el-table-column :label="this.moment(this.firstOfWeek).day(1).format('YYYY-MM-DD')" header-align="center">
+                    <el-table-column :label="this.moment(this.firstOfMonth).add(1, 'd').format('YYYY-MM-DD')" header-align="center">
                         <el-table-column
                                 header-align="center"
                                 width="110"
                                 align="left"
-                                label="星期一">
+                                :label="week(this.moment(this.firstOfMonth).add(1, 'd').format('YYYY-MM-DD'))">
                             <template slot-scope="scope">
-                                <el-select v-model="scope.row.mon" placeholder="请选择排班">
+                                <el-select v-model="scope.row.d2" placeholder="请选择排班">
                                     <el-option
                                             v-for="item in businesshours"
                                             :key="item.busihoursid"
@@ -122,14 +123,14 @@
                             </template>
                         </el-table-column>
                     </el-table-column>
-                    <el-table-column :label="this.moment(this.firstOfWeek).day(2).format('YYYY-MM-DD')" header-align="center">
+                    <el-table-column :label="this.moment(this.firstOfMonth).add(2, 'd').format('YYYY-MM-DD')" header-align="center">
                         <el-table-column
                                 header-align="center"
                                 width="110"
                                 align="left"
-                                label="星期二">
+                                :label="week(this.moment(this.firstOfMonth).add(2, 'd').format('YYYY-MM-DD'))">
                             <template slot-scope="scope">
-                                <el-select v-model="scope.row.tue" placeholder="请选择排班">
+                                <el-select v-model="scope.row.d3" placeholder="请选择排班">
                                     <el-option
                                             v-for="item in businesshours"
                                             :key="item.busihoursid"
@@ -140,14 +141,14 @@
                             </template>
                         </el-table-column>
                     </el-table-column>
-                    <el-table-column :label="this.moment(this.firstOfWeek).day(3).format('YYYY-MM-DD')" header-align="center">
+                    <el-table-column :label="this.moment(this.firstOfMonth).add(3, 'd').format('YYYY-MM-DD')" header-align="center">
                         <el-table-column
                                 header-align="center"
                                 width="110"
                                 align="left"
-                                label="星期三">
+                                :label="week(this.moment(this.firstOfMonth).add(3, 'd').format('YYYY-MM-DD'))">
                             <template slot-scope="scope">
-                                <el-select v-model="scope.row.wed" placeholder="请选择排班">
+                                <el-select v-model="scope.row.d4" placeholder="请选择排班">
                                     <el-option
                                             v-for="item in businesshours"
                                             :key="item.busihoursid"
@@ -158,14 +159,14 @@
                             </template>
                         </el-table-column>
                     </el-table-column>
-                    <el-table-column :label="this.moment(this.firstOfWeek).day(4).format('YYYY-MM-DD')" header-align="center">
+                    <el-table-column :label="this.moment(this.firstOfMonth).add(4, 'd').format('YYYY-MM-DD')" header-align="center">
                         <el-table-column
                                 header-align="center"
                                 width="110"
                                 align="left"
-                                label="星期四">
+                                :label="week(this.moment(this.firstOfMonth).add(4, 'd').format('YYYY-MM-DD'))">
                             <template slot-scope="scope">
-                                <el-select v-model="scope.row.thu" placeholder="请选择排班">
+                                <el-select v-model="scope.row.d5" placeholder="请选择排班">
                                     <el-option
                                             v-for="item in businesshours"
                                             :key="item.busihoursid"
@@ -176,14 +177,14 @@
                             </template>
                         </el-table-column>
                     </el-table-column>
-                    <el-table-column :label="this.moment(this.firstOfWeek).day(5).format('YYYY-MM-DD')" header-align="center">
+                    <el-table-column :label="this.moment(this.firstOfMonth).add(5, 'd').format('YYYY-MM-DD')" header-align="center">
                         <el-table-column
                                 header-align="center"
                                 width="110"
                                 align="left"
-                                label="星期五">
+                                :label="week(this.moment(this.firstOfMonth).add(5, 'd').format('YYYY-MM-DD'))">
                             <template slot-scope="scope">
-                                <el-select v-model="scope.row.fri" placeholder="请选择排班">
+                                <el-select v-model="scope.row.d6" placeholder="请选择排班">
                                     <el-option
                                             v-for="item in businesshours"
                                             :key="item.busihoursid"
@@ -194,14 +195,446 @@
                             </template>
                         </el-table-column>
                     </el-table-column>
-                    <el-table-column :label="this.moment(this.firstOfWeek).day(6).format('YYYY-MM-DD')" header-align="center">
+                    <el-table-column :label="this.moment(this.firstOfMonth).add(6, 'd').format('YYYY-MM-DD')" header-align="center">
                         <el-table-column
                                 header-align="center"
-                                width="100"
+                                width="110"
                                 align="left"
-                                label="星期六">
+                                :label="week(this.moment(this.firstOfMonth).add(6, 'd').format('YYYY-MM-DD'))">
                             <template slot-scope="scope">
-                                <el-select v-model="scope.row.sat" placeholder="请选择排班">
+                                <el-select v-model="scope.row.d7" placeholder="请选择排班">
+                                    <el-option
+                                            v-for="item in businesshours"
+                                            :key="item.busihoursid"
+                                            :label="item.busihoursname"
+                                            :value="item.busihoursid">
+                                    </el-option>
+                                </el-select>
+                            </template>
+                        </el-table-column>
+                    </el-table-column>
+                    <el-table-column :label="this.moment(this.firstOfMonth).add(7, 'd').format('YYYY-MM-DD')" header-align="center">
+                        <el-table-column
+                                header-align="center"
+                                width="110"
+                                align="left"
+                                :label="week(this.moment(this.firstOfMonth).add(7, 'd').format('YYYY-MM-DD'))">
+                            <template slot-scope="scope">
+                                <el-select v-model="scope.row.d8" placeholder="请选择排班">
+                                    <el-option
+                                            v-for="item in businesshours"
+                                            :key="item.busihoursid"
+                                            :label="item.busihoursname"
+                                            :value="item.busihoursid">
+                                    </el-option>
+                                </el-select>
+                            </template>
+                        </el-table-column>
+                    </el-table-column>
+                    <el-table-column :label="this.moment(this.firstOfMonth).add(8, 'd').format('YYYY-MM-DD')" header-align="center">
+                        <el-table-column
+                                header-align="center"
+                                width="110"
+                                align="left"
+                                :label="week(this.moment(this.firstOfMonth).add(8, 'd').format('YYYY-MM-DD'))">
+                            <template slot-scope="scope">
+                                <el-select v-model="scope.row.d9" placeholder="请选择排班">
+                                    <el-option
+                                            v-for="item in businesshours"
+                                            :key="item.busihoursid"
+                                            :label="item.busihoursname"
+                                            :value="item.busihoursid">
+                                    </el-option>
+                                </el-select>
+                            </template>
+                        </el-table-column>
+                    </el-table-column>
+                    <el-table-column :label="this.moment(this.firstOfMonth).add(9, 'd').format('YYYY-MM-DD')" header-align="center">
+                        <el-table-column
+                                header-align="center"
+                                width="110"
+                                align="left"
+                                :label="week(this.moment(this.firstOfMonth).add(9, 'd').format('YYYY-MM-DD'))">
+                            <template slot-scope="scope">
+                                <el-select v-model="scope.row.d10" placeholder="请选择排班">
+                                    <el-option
+                                            v-for="item in businesshours"
+                                            :key="item.busihoursid"
+                                            :label="item.busihoursname"
+                                            :value="item.busihoursid">
+                                    </el-option>
+                                </el-select>
+                            </template>
+                        </el-table-column>
+                    </el-table-column>
+                    <el-table-column :label="this.moment(this.firstOfMonth).add(10, 'd').format('YYYY-MM-DD')" header-align="center">
+                        <el-table-column
+                                header-align="center"
+                                width="110"
+                                align="left"
+                                :label="week(this.moment(this.firstOfMonth).add(10, 'd').format('YYYY-MM-DD'))">
+                            <template slot-scope="scope">
+                                <el-select v-model="scope.row.d11" placeholder="请选择排班">
+                                    <el-option
+                                            v-for="item in businesshours"
+                                            :key="item.busihoursid"
+                                            :label="item.busihoursname"
+                                            :value="item.busihoursid">
+                                    </el-option>
+                                </el-select>
+                            </template>
+                        </el-table-column>
+                    </el-table-column>
+                    <el-table-column :label="this.moment(this.firstOfMonth).add(11, 'd').format('YYYY-MM-DD')" header-align="center">
+                        <el-table-column
+                                header-align="center"
+                                width="110"
+                                align="left"
+                                :label="week(this.moment(this.firstOfMonth).add(11, 'd').format('YYYY-MM-DD'))">
+                            <template slot-scope="scope">
+                                <el-select v-model="scope.row.d12" placeholder="请选择排班">
+                                    <el-option
+                                            v-for="item in businesshours"
+                                            :key="item.busihoursid"
+                                            :label="item.busihoursname"
+                                            :value="item.busihoursid">
+                                    </el-option>
+                                </el-select>
+                            </template>
+                        </el-table-column>
+                    </el-table-column>
+                    <el-table-column :label="this.moment(this.firstOfMonth).add(12, 'd').format('YYYY-MM-DD')" header-align="center">
+                        <el-table-column
+                                header-align="center"
+                                width="110"
+                                align="left"
+                                :label="week(this.moment(this.firstOfMonth).add(12, 'd').format('YYYY-MM-DD'))">
+                            <template slot-scope="scope">
+                                <el-select v-model="scope.row.d13" placeholder="请选择排班">
+                                    <el-option
+                                            v-for="item in businesshours"
+                                            :key="item.busihoursid"
+                                            :label="item.busihoursname"
+                                            :value="item.busihoursid">
+                                    </el-option>
+                                </el-select>
+                            </template>
+                        </el-table-column>
+                    </el-table-column>
+                    <el-table-column :label="this.moment(this.firstOfMonth).add(13, 'd').format('YYYY-MM-DD')" header-align="center">
+                        <el-table-column
+                                header-align="center"
+                                width="110"
+                                align="left"
+                                :label="week(this.moment(this.firstOfMonth).add(13, 'd').format('YYYY-MM-DD'))">
+                            <template slot-scope="scope">
+                                <el-select v-model="scope.row.d14" placeholder="请选择排班">
+                                    <el-option
+                                            v-for="item in businesshours"
+                                            :key="item.busihoursid"
+                                            :label="item.busihoursname"
+                                            :value="item.busihoursid">
+                                    </el-option>
+                                </el-select>
+                            </template>
+                        </el-table-column>
+                    </el-table-column>
+                    <el-table-column :label="this.moment(this.firstOfMonth).add(14, 'd').format('YYYY-MM-DD')" header-align="center">
+                        <el-table-column
+                                header-align="center"
+                                width="110"
+                                align="left"
+                                :label="week(this.moment(this.firstOfMonth).add(14, 'd').format('YYYY-MM-DD'))">
+                            <template slot-scope="scope">
+                                <el-select v-model="scope.row.d15" placeholder="请选择排班">
+                                    <el-option
+                                            v-for="item in businesshours"
+                                            :key="item.busihoursid"
+                                            :label="item.busihoursname"
+                                            :value="item.busihoursid">
+                                    </el-option>
+                                </el-select>
+                            </template>
+                        </el-table-column>
+                    </el-table-column>
+                    <el-table-column :label="this.moment(this.firstOfMonth).add(15, 'd').format('YYYY-MM-DD')" header-align="center">
+                        <el-table-column
+                                header-align="center"
+                                width="110"
+                                align="left"
+                                :label="week(this.moment(this.firstOfMonth).add(15, 'd').format('YYYY-MM-DD'))">
+                            <template slot-scope="scope">
+                                <el-select v-model="scope.row.d16" placeholder="请选择排班">
+                                    <el-option
+                                            v-for="item in businesshours"
+                                            :key="item.busihoursid"
+                                            :label="item.busihoursname"
+                                            :value="item.busihoursid">
+                                    </el-option>
+                                </el-select>
+                            </template>
+                        </el-table-column>
+                    </el-table-column>
+                    <el-table-column :label="this.moment(this.firstOfMonth).add(16, 'd').format('YYYY-MM-DD')" header-align="center">
+                        <el-table-column
+                                header-align="center"
+                                width="110"
+                                align="left"
+                                :label="week(this.moment(this.firstOfMonth).add(16, 'd').format('YYYY-MM-DD'))">
+                            <template slot-scope="scope">
+                                <el-select v-model="scope.row.d17" placeholder="请选择排班">
+                                    <el-option
+                                            v-for="item in businesshours"
+                                            :key="item.busihoursid"
+                                            :label="item.busihoursname"
+                                            :value="item.busihoursid">
+                                    </el-option>
+                                </el-select>
+                            </template>
+                        </el-table-column>
+                    </el-table-column>
+                    <el-table-column :label="this.moment(this.firstOfMonth).add(17, 'd').format('YYYY-MM-DD')" header-align="center">
+                        <el-table-column
+                                header-align="center"
+                                width="110"
+                                align="left"
+                                :label="week(this.moment(this.firstOfMonth).add(17, 'd').format('YYYY-MM-DD'))">
+                            <template slot-scope="scope">
+                                <el-select v-model="scope.row.d18" placeholder="请选择排班">
+                                    <el-option
+                                            v-for="item in businesshours"
+                                            :key="item.busihoursid"
+                                            :label="item.busihoursname"
+                                            :value="item.busihoursid">
+                                    </el-option>
+                                </el-select>
+                            </template>
+                        </el-table-column>
+                    </el-table-column>
+                    <el-table-column :label="this.moment(this.firstOfMonth).add(18, 'd').format('YYYY-MM-DD')" header-align="center">
+                        <el-table-column
+                                header-align="center"
+                                width="110"
+                                align="left"
+                                :label="week(this.moment(this.firstOfMonth).add(18, 'd').format('YYYY-MM-DD'))">
+                            <template slot-scope="scope">
+                                <el-select v-model="scope.row.d19" placeholder="请选择排班">
+                                    <el-option
+                                            v-for="item in businesshours"
+                                            :key="item.busihoursid"
+                                            :label="item.busihoursname"
+                                            :value="item.busihoursid">
+                                    </el-option>
+                                </el-select>
+                            </template>
+                        </el-table-column>
+                    </el-table-column>
+                    <el-table-column :label="this.moment(this.firstOfMonth).add(19, 'd').format('YYYY-MM-DD')" header-align="center">
+                        <el-table-column
+                                header-align="center"
+                                width="110"
+                                align="left"
+                                :label="week(this.moment(this.firstOfMonth).add(19, 'd').format('YYYY-MM-DD'))">
+                            <template slot-scope="scope">
+                                <el-select v-model="scope.row.d20" placeholder="请选择排班">
+                                    <el-option
+                                            v-for="item in businesshours"
+                                            :key="item.busihoursid"
+                                            :label="item.busihoursname"
+                                            :value="item.busihoursid">
+                                    </el-option>
+                                </el-select>
+                            </template>
+                        </el-table-column>
+                    </el-table-column>
+                    <el-table-column :label="this.moment(this.firstOfMonth).add(20, 'd').format('YYYY-MM-DD')" header-align="center">
+                        <el-table-column
+                                header-align="center"
+                                width="110"
+                                align="left"
+                                :label="week(this.moment(this.firstOfMonth).add(20, 'd').format('YYYY-MM-DD'))">
+                            <template slot-scope="scope">
+                                <el-select v-model="scope.row.d21" placeholder="请选择排班">
+                                    <el-option
+                                            v-for="item in businesshours"
+                                            :key="item.busihoursid"
+                                            :label="item.busihoursname"
+                                            :value="item.busihoursid">
+                                    </el-option>
+                                </el-select>
+                            </template>
+                        </el-table-column>
+                    </el-table-column>
+                    <el-table-column :label="this.moment(this.firstOfMonth).add(21, 'd').format('YYYY-MM-DD')" header-align="center">
+                        <el-table-column
+                                header-align="center"
+                                width="110"
+                                align="left"
+                                :label="week(this.moment(this.firstOfMonth).add(21, 'd').format('YYYY-MM-DD'))">
+                            <template slot-scope="scope">
+                                <el-select v-model="scope.row.d22" placeholder="请选择排班">
+                                    <el-option
+                                            v-for="item in businesshours"
+                                            :key="item.busihoursid"
+                                            :label="item.busihoursname"
+                                            :value="item.busihoursid">
+                                    </el-option>
+                                </el-select>
+                            </template>
+                        </el-table-column>
+                    </el-table-column>
+                    <el-table-column :label="this.moment(this.firstOfMonth).add(22, 'd').format('YYYY-MM-DD')" header-align="center">
+                        <el-table-column
+                                header-align="center"
+                                width="110"
+                                align="left"
+                                :label="week(this.moment(this.firstOfMonth).add(22, 'd').format('YYYY-MM-DD'))">
+                            <template slot-scope="scope">
+                                <el-select v-model="scope.row.d23" placeholder="请选择排班">
+                                    <el-option
+                                            v-for="item in businesshours"
+                                            :key="item.busihoursid"
+                                            :label="item.busihoursname"
+                                            :value="item.busihoursid">
+                                    </el-option>
+                                </el-select>
+                            </template>
+                        </el-table-column>
+                    </el-table-column>
+                    <el-table-column :label="this.moment(this.firstOfMonth).add(23, 'd').format('YYYY-MM-DD')" header-align="center">
+                        <el-table-column
+                                header-align="center"
+                                width="110"
+                                align="left"
+                                :label="week(this.moment(this.firstOfMonth).add(23, 'd').format('YYYY-MM-DD'))">
+                            <template slot-scope="scope">
+                                <el-select v-model="scope.row.d24" placeholder="请选择排班">
+                                    <el-option
+                                            v-for="item in businesshours"
+                                            :key="item.busihoursid"
+                                            :label="item.busihoursname"
+                                            :value="item.busihoursid">
+                                    </el-option>
+                                </el-select>
+                            </template>
+                        </el-table-column>
+                    </el-table-column>
+                    <el-table-column :label="this.moment(this.firstOfMonth).add(24, 'd').format('YYYY-MM-DD')" header-align="center">
+                        <el-table-column
+                                header-align="center"
+                                width="110"
+                                align="left"
+                                :label="week(this.moment(this.firstOfMonth).add(24, 'd').format('YYYY-MM-DD'))">
+                            <template slot-scope="scope">
+                                <el-select v-model="scope.row.d25" placeholder="请选择排班">
+                                    <el-option
+                                            v-for="item in businesshours"
+                                            :key="item.busihoursid"
+                                            :label="item.busihoursname"
+                                            :value="item.busihoursid">
+                                    </el-option>
+                                </el-select>
+                            </template>
+                        </el-table-column>
+                    </el-table-column>
+                    <el-table-column :label="this.moment(this.firstOfMonth).add(25, 'd').format('YYYY-MM-DD')" header-align="center">
+                        <el-table-column
+                                header-align="center"
+                                width="110"
+                                align="left"
+                                :label="week(this.moment(this.firstOfMonth).add(25, 'd').format('YYYY-MM-DD'))">
+                            <template slot-scope="scope">
+                                <el-select v-model="scope.row.d26" placeholder="请选择排班">
+                                    <el-option
+                                            v-for="item in businesshours"
+                                            :key="item.busihoursid"
+                                            :label="item.busihoursname"
+                                            :value="item.busihoursid">
+                                    </el-option>
+                                </el-select>
+                            </template>
+                        </el-table-column>
+                    </el-table-column>
+                    <el-table-column :label="this.moment(this.firstOfMonth).add(26, 'd').format('YYYY-MM-DD')" header-align="center">
+                        <el-table-column
+                                header-align="center"
+                                width="110"
+                                align="left"
+                                :label="week(this.moment(this.firstOfMonth).add(26, 'd').format('YYYY-MM-DD'))">
+                            <template slot-scope="scope">
+                                <el-select v-model="scope.row.d27" placeholder="请选择排班">
+                                    <el-option
+                                            v-for="item in businesshours"
+                                            :key="item.busihoursid"
+                                            :label="item.busihoursname"
+                                            :value="item.busihoursid">
+                                    </el-option>
+                                </el-select>
+                            </template>
+                        </el-table-column>
+                    </el-table-column>
+                    <el-table-column :label="this.moment(this.firstOfMonth).add(27, 'd').format('YYYY-MM-DD')" header-align="center">
+                        <el-table-column
+                                header-align="center"
+                                width="110"
+                                align="left"
+                                :label="week(this.moment(this.firstOfMonth).add(27, 'd').format('YYYY-MM-DD'))">
+                            <template slot-scope="scope">
+                                <el-select v-model="scope.row.d28" placeholder="请选择排班">
+                                    <el-option
+                                            v-for="item in businesshours"
+                                            :key="item.busihoursid"
+                                            :label="item.busihoursname"
+                                            :value="item.busihoursid">
+                                    </el-option>
+                                </el-select>
+                            </template>
+                        </el-table-column>
+                    </el-table-column>
+                    <el-table-column :label="this.moment(this.firstOfMonth).add(28, 'd').format('YYYY-MM-DD')" header-align="center">
+                        <el-table-column
+                                header-align="center"
+                                width="110"
+                                align="left"
+                                :label="week(this.moment(this.firstOfMonth).add(28, 'd').format('YYYY-MM-DD'))">
+                            <template slot-scope="scope">
+                                <el-select v-model="scope.row.d29" placeholder="请选择排班">
+                                    <el-option
+                                            v-for="item in businesshours"
+                                            :key="item.busihoursid"
+                                            :label="item.busihoursname"
+                                            :value="item.busihoursid">
+                                    </el-option>
+                                </el-select>
+                            </template>
+                        </el-table-column>
+                    </el-table-column>
+                    <el-table-column :label="this.moment(this.firstOfMonth).add(29, 'd').format('YYYY-MM-DD')" header-align="center">
+                        <el-table-column
+                                header-align="center"
+                                width="110"
+                                align="left"
+                                :label="week(this.moment(this.firstOfMonth).add(29, 'd').format('YYYY-MM-DD'))">
+                            <template slot-scope="scope">
+                                <el-select v-model="scope.row.d30" placeholder="请选择排班">
+                                    <el-option
+                                            v-for="item in businesshours"
+                                            :key="item.busihoursid"
+                                            :label="item.busihoursname"
+                                            :value="item.busihoursid">
+                                    </el-option>
+                                </el-select>
+                            </template>
+                        </el-table-column>
+                    </el-table-column>
+                    <el-table-column :label="this.moment(this.firstOfMonth).add(30, 'd').format('YYYY-MM-DD')" header-align="center">
+                        <el-table-column
+                                header-align="center"
+                                width="110"
+                                align="left"
+                                :label="week(this.moment(this.firstOfMonth).add(30, 'd').format('YYYY-MM-DD'))">
+                            <template slot-scope="scope">
+                                <el-select v-model="scope.row.d31" placeholder="请选择排班">
                                     <el-option
                                             v-for="item in businesshours"
                                             :key="item.busihoursid"
@@ -222,8 +655,7 @@
                     </el-table-column>
                 </el-table>
             </div>
-            <div style="display: flex;justify-content: space-between">
-                <el-button type="warning" icon="el-icon-upload2" @click="batchUpdate">批量更新</el-button>
+            <div style="display: flex;justify-content: flex-end">
                 <el-pagination
                         background
                         @current-change="currentChange"
@@ -245,8 +677,8 @@
                     empname: null,
                     depid: null,
                 },
-                firstOfWeek: '',
-                endOfWeek: '',
+                firstOfMonth: '',
+                endOfMonth: '',
                 page: 1,
                 size: 10,
                 total: 0,
@@ -269,8 +701,8 @@
         },
         methods:{
             initData(){
-                this.firstOfWeek=this.moment().startOf('week').format('YYYY-MM-DD');
-                this.endOfWeek=this.moment(this.firstOfWeek).day(6).format('YYYY-MM-DD');
+                this.firstOfMonth=this.moment().startOf('month').format('YYYY-MM-DD');
+                this.endOfMonth=this.moment().endOf('month').format('YYYY-MM-DD');
                 if (!window.sessionStorage.getItem("deps")) {
                     this.getRequest('/employee/basic/info/deps').then(resp => {
                         if (resp) {
@@ -294,7 +726,7 @@
             },
             initWS(){
                 this.wsInfoLoading=true;
-                let url="/attendance/workingschedule/schedule/?page=" + this.page + '&size=' + this.size + '&firstofweek=' + this.firstOfWeek;
+                let url="/attendance/workingschedule/schedule/?page=" + this.page + '&size=' + this.size + '&monthday=' + this.firstOfMonth +','+this.endOfMonth + '&numofday=' + this.moment(this.firstOfWeek).daysInMonth();
                 if(this.searchValue.empname){
                     url+="&empname="+this.searchValue.empname;
                 }
@@ -316,17 +748,22 @@
                 });
             },
             lastweek(){
-                this.firstOfWeek=this.moment(this.firstOfWeek).day(-7).format('YYYY-MM-DD');
-                this.endOfWeek=this.moment(this.endOfWeek).day(-1).format('YYYY-MM-DD');
+                this.firstOfMonth=this.moment(this.firstOfMonth).subtract(1, 'days').startOf('month').format('YYYY-MM-DD');
+                this.endOfMonth=this.moment(this.firstOfMonth).endOf('month').format('YYYY-MM-DD');
                 this.initWS();
             },
             nextweek(){
-                this.firstOfWeek=this.moment(this.firstOfWeek).day(7).format('YYYY-MM-DD');
-                this.endOfWeek=this.moment(this.endOfWeek).day(13).format('YYYY-MM-DD');
+                this.firstOfMonth=this.moment(this.endOfMonth).add(1, 'days').startOf('month').format('YYYY-MM-DD');
+                this.endOfMonth=this.moment(this.endOfMonth).add(1, 'days').endOf('month').format('YYYY-MM-DD');
+                this.initWS();
+            },
+            changeAllTime(){
+                this.firstOfMonth=this.moment(this.firstOfMonth).startOf('month').format('YYYY-MM-DD');
+                this.endOfMonth=this.moment(this.firstOfMonth).endOf('month').format('YYYY-MM-DD');
                 this.initWS();
             },
             autoDo(){
-                this.getRequest("/attendance/workingschedule/schedule/autodo/?firstofweek=" + this.firstOfWeek).then(resp => {
+                this.getRequest("/attendance/workingschedule/schedule/autodo/?monthday=" + this.firstOfMonth +','+this.endOfMonth).then(resp => {
                     if (resp) {
                         this.initWS();
                     }
@@ -349,30 +786,12 @@
                 this.initWS();
             },
             submitSchedule(data){
-                this.$confirm('此操作将提交【' + data.employee.empname + '】的排班计划, 是否继续?', '提示', {
+                this.$confirm('此操作将提交【' + data.empname + '】的排班计划, 是否继续?', '提示', {
                     confirmButtonText: '确定',
                     cancelButtonText: '取消',
                     type: 'warning'
                 }).then(() => {
                     this.putRequest("/attendance/workingschedule/schedule/", data).then(resp => {
-                        if (resp) {
-                            this.initWS();
-                        }
-                    })
-                }).catch(() => {
-                    this.$message({
-                        type: 'info',
-                        message: '已取消提交'
-                    });
-                });
-            },
-            batchUpdate(){
-                this.$confirm('此操作将提交所选中的所有的排班计划, 是否继续?', '提示', {
-                    confirmButtonText: '确定',
-                    cancelButtonText: '取消',
-                    type: 'warning'
-                }).then(() => {
-                    this.postRequest("/attendance/workingschedule/schedule/batchupdate/", this.multipleSelection).then(resp => {
                         if (resp) {
                             this.initWS();
                         }
@@ -405,6 +824,23 @@
             handleSelectionChange(val) {
                 this.multipleSelection = val;
             },
+            week(data){
+                let num=this.moment(data).day();
+                if(num===0)
+                    return '星期日';
+                if(num===1)
+                    return '星期一';
+                if(num===2)
+                    return '星期二';
+                if(num===3)
+                    return '星期三';
+                if(num===4)
+                    return '星期四';
+                if(num===5)
+                    return '星期五';
+                if(num===6)
+                    return '星期六'
+            }
         }
     }
 </script>

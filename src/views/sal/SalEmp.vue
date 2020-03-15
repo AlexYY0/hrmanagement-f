@@ -305,7 +305,7 @@
                         </el-col>
                         <el-col :span="6">
                             <el-form-item label="子女教育:" prop="childedu">
-                                <el-select clearable v-model="empSal.childedu" placeholder="请选择子女教育" size="mini" style="width: 200px;">
+                                <el-select filterable clearable v-model="empSal.childedu" placeholder="请选择子女教育" size="mini" style="width: 200px;">
                                     <el-option
                                             v-for="item in speadds"
                                             :key="item.sadid"
@@ -317,7 +317,7 @@
                         </el-col>
                         <el-col :span="6">
                             <el-form-item label="继续教育:" prop="conedu">
-                                <el-select clearable v-model="empSal.conedu" placeholder="请选择继续教育" size="mini" style="width: 200px;">
+                                <el-select filterable clearable v-model="empSal.conedu" placeholder="请选择继续教育" size="mini" style="width: 200px;">
                                     <el-option
                                             v-for="item in speadds"
                                             :key="item.sadid"
@@ -331,7 +331,7 @@
                     <el-row>
                         <el-col :span="6">
                             <el-form-item label="大病医疗:" prop="sermedical">
-                                <el-select clearable v-model="empSal.sermedical" placeholder="请选择大病医疗" size="mini" style="width: 200px;">
+                                <el-select filterable clearable v-model="empSal.sermedical" placeholder="请选择大病医疗" size="mini" style="width: 200px;">
                                     <el-option
                                             v-for="item in speadds"
                                             :key="item.sadid"
@@ -343,7 +343,7 @@
                         </el-col>
                         <el-col :span="6">
                             <el-form-item label="住房贷款:" prop="housingloan">
-                                <el-select clearable v-model="empSal.housingloan" placeholder="请选择住房贷款" size="mini" style="width: 200px;">
+                                <el-select filterable clearable v-model="empSal.housingloan" placeholder="请选择住房贷款" size="mini" style="width: 200px;">
                                     <el-option
                                             v-for="item in speadds"
                                             :key="item.sadid"
@@ -355,7 +355,7 @@
                         </el-col>
                         <el-col :span="6">
                             <el-form-item label="住房租金:" prop="rental">
-                                <el-select clearable v-model="empSal.rental" placeholder="请选择住房租金" size="mini" style="width: 200px;">
+                                <el-select filterable clearable v-model="empSal.rental" placeholder="请选择住房租金" size="mini" style="width: 200px;">
                                     <el-option
                                             v-for="item in speadds"
                                             :key="item.sadid"
@@ -367,7 +367,7 @@
                         </el-col>
                         <el-col :span="6">
                             <el-form-item label="赡养老人:" prop="supportold">
-                                <el-select clearable v-model="empSal.supportold" placeholder="请选择赡养老人" size="mini" style="width: 200px;">
+                                <el-select filterable clearable v-model="empSal.supportold" placeholder="请选择赡养老人" size="mini" style="width: 200px;">
                                     <el-option
                                             v-for="item in speadds"
                                             :key="item.sadid"
@@ -381,7 +381,7 @@
                     <el-row>
                         <el-col :span="6">
                             <el-form-item label="福利补贴:" prop="welid">
-                                <el-select clearable v-model="empSal.welid" placeholder="请选择福利补贴" size="mini" style="width: 200px;">
+                                <el-select filterable clearable v-model="empSal.welid" placeholder="请选择福利补贴" size="mini" style="width: 200px;">
                                     <el-option
                                             v-for="item in wels"
                                             :key="item.welid"
@@ -484,9 +484,9 @@
                             </el-form-item>
                         </el-col>
                         <el-col v-if="isEmpSalAdj" :span="6">
-                            <el-form-item label="调薪日期:" prop="empSalAdj.sadata">
+                            <el-form-item label="调薪日期:" prop="empSalAdj.sadate">
                                 <el-date-picker
-                                        v-model="empSal.empSalAdj.sadata"
+                                        v-model="empSal.empSalAdj.sadate"
                                         size="mini"
                                         type="datetime"
                                         value-format="yyyy-MM-dd HH:mm:ss"
@@ -561,7 +561,7 @@
                             element-loading-text="正在加载..."
                             element-loading-spinner="el-icon-loading"
                             element-loading-background="rgba(0, 0, 0, 0.8)"
-                            :default-sort = "{prop: 'sadata', order: 'descending'}">
+                            :default-sort = "{prop: 'sadate', order: 'descending'}">
                         <el-table-column
                                 header-align="center"
                                 prop="employee.empname"
@@ -576,7 +576,7 @@
                         </el-table-column>
                         <el-table-column
                                 header-align="center"
-                                prop="sadata"
+                                prop="sadate"
                                 label="调薪日期"
                                 sortable width="140">
                         </el-table-column>
@@ -609,9 +609,9 @@
                         <el-form-item label="员工工号: " prop="workid">
                             <el-input style="width: 200px" v-model="empSalAdj.workid" prefix-icon="el-icon-edit"></el-input>
                         </el-form-item>
-                        <el-form-item label="调薪日期: " prop="sadata">
+                        <el-form-item label="调薪日期: " prop="sadate">
                             <el-date-picker
-                                    v-model="empSalAdj.sadata"
+                                    v-model="empSalAdj.sadate"
                                     size="mini"
                                     type="datetime"
                                     value-format="yyyy-MM-dd HH:mm:ss"
@@ -690,7 +690,7 @@
                 empsaladjsize: 10,
                 empsaladjtotal: 0,
                 empSalAdj: {
-                    sadata: "",
+                    sadate: "",
                     saremark: ""
                 },
                 empSal: {
@@ -712,7 +712,7 @@
                     supportold: 1,
                     welid: 1,
                     empSalAdj: {
-                        sadata: '',
+                        sadate: '',
                         saremark: ''
                     }
                 },
@@ -740,7 +740,7 @@
                     housingloan: [{required: true, message: '请选择住房贷款利息', trigger: 'change'}],
                     rental: [{required: true, message: '请选择住房租金', trigger: 'change'}],
                     supportold: [{required: true, message: '请选择赡养老人', trigger: 'change'}],
-                    'empSalAdj.sadata': [{required: true, message: '请输入调薪日期', trigger: 'blur'}],
+                    'empSalAdj.sadate': [{required: true, message: '请输入调薪日期', trigger: 'blur'}],
                     'empSalAdj.saremark': [{required: true, message: '请输入调薪备注', trigger: 'blur'}]
                 },
                 defaultProps: {
@@ -889,7 +889,7 @@
                     supportold: "",
                     welid: "",
                     empSalAdj: {
-                        sadata: '2019-01-01',
+                        sadate: '2019-01-01',
                         saremark: 'test'
                     }
                 }
@@ -910,7 +910,7 @@
                 this.$refs['empSalForm'].resetFields();
             },
             batchDelete(){
-                this.$confirm('此操作将永久删除所选中的所有员工x薪资信息, 是否继续?', '提示', {
+                this.$confirm('此操作将永久删除所选中的所有员工薪资信息, 是否继续?', '提示', {
                     confirmButtonText: '确定',
                     cancelButtonText: '取消',
                     type: 'warning'
@@ -1020,7 +1020,7 @@
                 this.empSalAdjLoading = true;
                 let url = '/salary/employee/saladj/?page=' + this.empsaladjpage + '&size=' + this.empsaladjsize+ '&workid=' + data.workid;
                 if (this.searchEmpSalAdj) {
-                    url += "&sadata=" + this.searchEmpSalAdj;
+                    url += "&sadate=" + this.searchEmpSalAdj;
                 }
                 this.getRequest(url).then(resp => {
                     this.empSalAdjLoading = false;
@@ -1037,7 +1037,7 @@
                 this.title = '调整员工薪酬';
                 this.empSal = Object.assign({},this.currentEmpSal);
                 this.empSalAdj={
-                    sadata: "",
+                    sadate: "",
                     saremark: ""
                 };
                 this.empSal.empSalAdj=this.empSalAdj;

@@ -457,7 +457,7 @@
                 <div style="display: flex;justify-content: space-between">
                     <div>
                         <el-date-picker
-                                v-model="searchEmpChangeData"
+                                v-model="searchEmpChangeDate"
                                 type="daterange"
                                 size="mini"
                                 unlink-panels
@@ -488,7 +488,7 @@
                             element-loading-text="正在加载..."
                             element-loading-spinner="el-icon-loading"
                             element-loading-background="rgba(0, 0, 0, 0.8)"
-                            :default-sort = "{prop: 'empchandata', order: 'descending'}">
+                            :default-sort = "{prop: 'empchandate', order: 'descending'}">
                         <el-table-column type="expand">
                             <template slot-scope="props">
                                 <el-form label-position="left" inline class="emp-change-expand">
@@ -502,7 +502,7 @@
                                         <span>{{ props.row.department.depname }}</span>
                                     </el-form-item>
                                     <el-form-item label="调动日期: ">
-                                        <span>{{ props.row.empchandata }}</span>
+                                        <span>{{ props.row.empchandate }}</span>
                                     </el-form-item>
                                     <el-form-item label="调动备注: ">
                                         <span>{{ props.row.empchanremark }}</span>
@@ -524,7 +524,7 @@
                         </el-table-column>
                         <el-table-column
                                 header-align="center"
-                                prop="empchandata"
+                                prop="empchandate"
                                 label="调动日期"
                                 sortable>
                         </el-table-column>
@@ -563,9 +563,9 @@
                                 </div>
                             </el-popover>
                         </el-form-item>
-                        <el-form-item label="调动日期: " prop="empchandata">
+                        <el-form-item label="调动日期: " prop="empchandate">
                             <el-date-picker
-                                    v-model="empchange.empchandata"
+                                    v-model="empchange.empchandate"
                                     type="date"
                                     value-format="yyyy-MM-dd"
                                     placeholder="请选择排班周日日期"
@@ -602,7 +602,7 @@
                 <div style="display: flex;justify-content: space-between">
                     <div>
                         <el-date-picker
-                                v-model="searchContractData"
+                                v-model="searchContractDate"
                                 type="daterange"
                                 size="mini"
                                 unlink-panels
@@ -631,7 +631,7 @@
                             element-loading-text="正在加载..."
                             element-loading-spinner="el-icon-loading"
                             element-loading-background="rgba(0, 0, 0, 0.8)"
-                            :default-sort = "{prop: 'signdata', order: 'descending'}">
+                            :default-sort = "{prop: 'signdate', order: 'descending'}">
                         <el-table-column
                                 header-align="center"
                                 prop="employee.empname"
@@ -646,7 +646,7 @@
                         </el-table-column>
                         <el-table-column
                                 header-align="center"
-                                prop="signdata"
+                                prop="signdate"
                                 label="签定日期"
                                 sortable>
                         </el-table-column>
@@ -705,9 +705,9 @@
                                 </el-form-item>
                             </el-col>
                             <el-col :span="6">
-                                <el-form-item label="签署日期: " prop="signdata">
+                                <el-form-item label="签署日期: " prop="signdate">
                                     <el-date-picker
-                                            v-model="contract.signdata"
+                                            v-model="contract.signdate"
                                             type="date"
                                             value-format="yyyy-MM-dd"
                                             placeholder="请选择日期"
@@ -784,8 +784,8 @@
                 empChangeDrawer: false,
                 contractDrawer: false,
                 direction: 'rtl',
-                searchEmpChangeData: null,
-                searchContractData: null,
+                searchEmpChangeDate: null,
+                searchContractDate: null,
                 title: '',
                 contracttitle: '',
                 standby:'备用框',
@@ -857,7 +857,7 @@
                 empchange: {
                     workid: "1",
                     afterdepid: 1,
-                    empchandata: "2020-1-20",
+                    empchandate: "2020-1-20",
                     empchanremark: "test"
                 },
                 contract: {
@@ -865,7 +865,7 @@
                     begincontract: "2020-1-20",
                     endcontract: "2020-1-20",
                     content: "test",
-                    signdata: "2020-1-20"
+                    signdate: "2020-1-20"
                 },
                 defaultProps: {
                     children: 'children',
@@ -906,11 +906,11 @@
                     specialty: [{required: true, message: '请输入专业', trigger: 'blur'}],
                     hdegree: [{required: true, message: '请输入学历', trigger: 'blur'}],
                     afterdepid: [{required: true, message: '请选择部门名称', trigger: 'change'}],
-                    empchandata: [{required: true, message: '请输入调动日期', trigger: 'blur'}],
+                    empchandate: [{required: true, message: '请输入调动日期', trigger: 'blur'}],
                     empchanremark: [{required: true, message: '请输入调动原因', trigger: 'blur'}],
                     begincontract: [{required: true, message: '请输入合同生效日期', trigger: 'blur'}],
                     endcontract: [{required: true, message: '请输入合同结束日期', trigger: 'blur'}],
-                    signdata: [{required: true, message: '请输入签署日期', trigger: 'blur'}],
+                    signdate: [{required: true, message: '请输入签署日期', trigger: 'blur'}],
                     standby: [{required: false, message: '请输入备用', trigger: 'blur'}],
                 }
             }
@@ -920,12 +920,12 @@
             this.initData();
         },
         methods: {
-            onError(err, file, fileList) {
+            onError() {
                 this.importDataBtnText = '导入数据';
                 this.importDataBtnIcon = 'el-icon-upload2';
                 this.importDataDisabled = false;
             },
-            onSuccess(response, file, fileList) {
+            onSuccess() {
                 this.importDataBtnText = '导入数据';
                 this.importDataBtnIcon = 'el-icon-upload2';
                 this.importDataDisabled = false;
@@ -988,7 +988,7 @@
                 this.empchange = {
                     workid: this.currentworkid,
                     afterdepid: "",
-                    empchandata: "",
+                    empchandate: "",
                     empchanremark: ""
                 };
                 this.inputDepName= "";
@@ -999,7 +999,7 @@
                     begincontract: "",
                     endcontract: "",
                     content: "",
-                    signdata: "",
+                    signdate: "",
                 };
             },
             getMaxWordID() {
@@ -1279,8 +1279,8 @@
             initEmpChange(data){
                 this.empChangeLoading = true;
                 let url = '/employee/basic/change/?page=' + this.empchangepage + '&size=' + this.empchangesize+ '&workid=' + data;
-                if (this.searchEmpChangeData) {
-                    url += "&empchandata=" + this.searchEmpChangeData;
+                if (this.searchEmpChangeDate) {
+                    url += "&empchandate=" + this.searchEmpChangeDate;
                 }
                 this.getRequest(url).then(resp => {
                     this.empChangeLoading = false;
@@ -1307,8 +1307,8 @@
             initContract(data){
                 this.contractLoading=true;
                 let url = '/employee/basic/contractinfo/?page=' + this.contractpage + '&size=' + this.contractsize+ '&workid=' + data;
-                if (this.searchContractData) {
-                    url += "&signdata=" + this.searchContractData;
+                if (this.searchContractDate) {
+                    url += "&signdate=" + this.searchContractDate;
                 }
                 this.getRequest(url).then(resp => {
                     this.contractLoading = false;
