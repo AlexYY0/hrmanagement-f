@@ -1031,12 +1031,14 @@
                 this.isContractChange = false;
                 this.contractDialogForm=true;
                 this.$refs['contractForm'].resetFields();
+                this.$refs.uploadImage.clearFiles();
+            },
+            getToken(){
                 this.getRequest("/user/token").then(resp => {
                     if (resp) {
                         this.uptoken.token = resp;
                     }
                 });
-                this.$refs.uploadImage.clearFiles();
             },
             showEditEmpView(data) {
                 this.title = '编辑员工信息';
@@ -1265,6 +1267,7 @@
                         this.direction='ltr';
                         this.currentworkid=command.rowdata.workid;
                         this.initContract(this.currentworkid);
+                        this.getToken();
                         break;
                 }
             },

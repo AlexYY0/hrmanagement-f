@@ -1,5 +1,5 @@
 <template>
-    <div style="width: 87%">
+    <div style="width: 88%">
         <div>
             <div class="top-menu">
                 <div>
@@ -116,7 +116,7 @@
                 <el-table-column
                         header-align="center"
                         prop="attestatus.attestaname"
-                        width="100"
+                        width="125"
                         align="left"
                         label="考勤状态">
                 </el-table-column>
@@ -265,7 +265,7 @@
                 multipleSelection: [],
                 atteDays: [],
                 atteDay: {},
-                attestatus: [{value:0,label:'旷工'},{value:1,label:'正常'}, {value:2,label:'异常'},{value:3,label:'请假'},{value:4,label:'加班'},{value:5,label:'出差'},{value:6,label:'调休'}],
+                attestatus: [{value:0,label:'未签到/未签退'},{value:1,label:'未签到/早退'}, {value:2,label:'未签到/正常签退'},{value:10,label:'迟到/未签退'},{value:11,label:'迟到/早退'},{value:12,label:'迟到/正常签退'},{value:20,label:'正常签到/未签退'},{value:21,label:'正常签到/早退'},{value:22,label:'正常签到/正常签退'}],
                 defaultProps: {
                     children: 'children',
                     label: 'depname'

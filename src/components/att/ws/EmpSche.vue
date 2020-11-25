@@ -763,10 +763,21 @@
                 this.initWS();
             },
             autoDo(){
-                this.getRequest("/attendance/workingschedule/schedule/autodo/?monthday=" + this.firstOfMonth +','+this.endOfMonth).then(resp => {
-                    if (resp) {
-                        this.initWS();
-                    }
+                this.$confirm('此操作将进行自动排班, 是否继续?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    this.getRequest("/attendance/workingschedule/schedule/autodo/?monthday=" + this.firstOfMonth +','+this.endOfMonth).then(resp => {
+                        if (resp) {
+                            this.initWS();
+                        }
+                    });
+                }).catch(() => {
+                    this.$message({
+                        type: 'info',
+                        message: '已取消自动排班'
+                    });
                 });
             },
             searvhViewHandleNodeClick(data) {

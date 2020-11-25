@@ -77,7 +77,7 @@
                     <el-select
                             style="width: 250px"
                             :popper-append-to-body="false" class="findAllEmp-autocomplete"
-                            clearable v-model="user.workid" filterable placeholder="请选择领导姓名">
+                            clearable v-model="user.workid" filterable placeholder="请选择员工姓名">
                         <el-option
                                 v-for="item in employees"
                                 :key="item.workid"

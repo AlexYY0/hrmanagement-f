@@ -57,7 +57,7 @@
                         </tr>
                         <tr>
                             <td>
-                                <el-tag>领导工号</el-tag>
+                                <el-tag>领导姓名</el-tag>
                             </td>
                             <td>
                                 <el-select

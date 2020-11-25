@@ -18,7 +18,7 @@
             </el-header>
             <el-container>
                 <el-aside width="200px">
-                    <el-menu router unique-opened>
+                    <el-menu router unique-opened :collapse="iscollapse">
                         <el-submenu :index="index+''" v-for="(item,index) in routes" v-if="!item.hidden" :key="index">
                             <template slot="title">
                                 <i style="color: #409eff;margin-right: 5px" :class="item.iconCls"></i>
@@ -50,12 +50,16 @@
         name: "Home",
         data() {
             return {
-                user: JSON.parse(window.sessionStorage.getItem("user"))
+                iscollapse: false
+                /*user: JSON.parse(window.sessionStorage.getItem("user"))*/
             }
         },
         computed: {
             routes() {
                 return this.$store.state.routes;
+            },
+            user() {
+                return this.$store.state.currentHr;
             }
         },
         methods: {
@@ -79,7 +83,15 @@
                 } else if (cmd == 'userinfo') {
                     this.$router.push('/userinfo');
                 }
-            }
+            },
+            /*mouseenter(){
+                this.iscollapse=false;
+                console.log("mouseover");
+            },
+            mouseleave(){
+                this.iscollapse=true;
+                console.log("mouseout");
+            }*///菜单栏自动收缩
         }
     }
 </script>

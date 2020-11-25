@@ -6,6 +6,11 @@ import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
 import moment from "moment";
 
+import { Pie } from "@antv/g2plot";
+import { Radar  } from '@antv/g2plot';
+import { Bar } from '@antv/g2plot';
+import { Area } from '@antv/g2plot';
+
 import {postRequestExcel} from "./utils/api";
 import {postRequest} from "./utils/api";
 import {postKeyValueRequest} from "./utils/api";
@@ -25,8 +30,12 @@ Vue.prototype.deleteRequest = deleteRequest;
 Vue.prototype.getRequest = getRequest;
 
 Vue.prototype.moment = moment;
+Vue.prototype.Pie = Pie;
+Vue.prototype.Radar = Radar ;
+Vue.prototype.Bar = Bar;
+Vue.prototype.Area = Area;
 
-Vue.config.productionTip = false
+Vue.config.productionTip = false;
 
 Vue.use(ElementUI,{size:'small'});
 

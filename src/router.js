@@ -29,6 +29,9 @@ export default new Router({
                     hidden:true
                 }
             ]
+        }, {
+            path: '*',
+            redirect: '/home'
         }
     ]
 })

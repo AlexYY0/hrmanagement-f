@@ -165,7 +165,7 @@
                 this.getRequest('/user/info').then(resp =>{
                     if(resp){
                         this.user=resp;
-                        this.user2=Object.assign({},this.user)
+                        this.user2=Object.assign({},this.user);
                         window.sessionStorage.setItem("user", JSON.stringify(resp));
                         this.$store.commit('INIT_CURRENTHR', resp);
                     }
@@ -243,8 +243,6 @@
                 this.$message.error(error.status.toString());
             },
             uploadImageSuccess(response){
-                this.imgFlag = false;
-                this.percent = 0;
                 this.user2.userface='http://storage.emperorws.club/' + response.key;
                 this.putRequest("/user/info", this.user2).then(resp => {
                     if (resp) {
